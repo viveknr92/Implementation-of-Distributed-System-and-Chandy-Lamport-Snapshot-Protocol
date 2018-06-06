@@ -47,11 +47,13 @@ public class ReadConfigFile {
 			}
 			line = sc.nextLine();
 			///////////////////////////////////////////////////////////////////////////////////////////////////
+			Graph graph = new Graph(GlobalParameters.nodes);
 			while(!line.contentEquals("")) {
 				String[] nodeInfo = line.split(" ");
 				Node nd = new Node();
 				nd.setNode(nodeInfo);
 				nd.printNode();
+				graph.nodes.add(nd);
 				if (nodeInfo.length > 3) {
 					if (nodeInfo[3].startsWith("#")) {
 						line = sc.nextLine();
@@ -69,7 +71,6 @@ public class ReadConfigFile {
 				throw new ConfigFileFormatException("Missing line break");				
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////
-			Graph graph = new Graph(GlobalParameters.nodes);
 			String[] neighbors;
 			for (int i = 0; sc.hasNextLine() ; i++) { 
 				//read each line and convert to string
@@ -78,7 +79,7 @@ public class ReadConfigFile {
 					//obtain the integer values from comma separated string
 					try {
 						neighbors = line.split(" ");
-						Edge e = new Edge(i,Integer.parseInt(neighbors[j]));
+						Edge e = new Edge(graph.nodes.get(i),graph.nodes.get(Integer.parseInt(neighbors[j])));
 						graph.edges.add(e); //add an edge with source vertex, destination vertex and weight 
 						System.out.println();
 					} 

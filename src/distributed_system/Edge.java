@@ -2,12 +2,12 @@ package distributed_system;
 
 
 public class Edge {
-	public int source;
-	public int dest;
+	public Node source;
+	public Node dest;
 	
-	public Edge(int source, int dest) {
+	public Edge(Node source, Node dest) {
 		this.source = source;
 		this.dest = dest;
-		System.out.print(source + " -> " + dest + "\t");
+		System.out.print(source.nodeId + " -> " + dest.nodeId + "\t");
 	}
 }
