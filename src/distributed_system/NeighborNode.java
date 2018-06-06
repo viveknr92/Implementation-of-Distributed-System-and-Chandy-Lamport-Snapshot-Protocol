@@ -1,5 +1,8 @@
 package distributed_system;
 
-public class NeighborNode {
+import java.util.ArrayList;
+import java.util.HashMap;
 
+public class NeighborNode {
+	public HashMap<Integer, ArrayList<Integer>> neighborNodes;
 }
