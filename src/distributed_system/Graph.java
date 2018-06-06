@@ -2,7 +2,7 @@ package distributed_system;
 
 import java.util.ArrayList;
 
-public class Graph {
+public class Graph { // contains nodes and edges
 	public ArrayList<Edge> edges;
 	public ArrayList<Node> nodes;
 	public int vertices;

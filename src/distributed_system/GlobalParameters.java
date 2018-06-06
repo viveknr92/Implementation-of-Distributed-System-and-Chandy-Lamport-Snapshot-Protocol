@@ -1,6 +1,6 @@
 package distributed_system;
 
-public class GlobalParameters {
+public class GlobalParameters { // there are 6 global parameters
 	public static int nodes; 
 	public static int minPerActive;
 	public static int maxPerActive;

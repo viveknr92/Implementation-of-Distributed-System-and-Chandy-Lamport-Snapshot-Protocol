@@ -1,7 +1,7 @@
 package distributed_system;
 
 
-public class Edge {
+public class Edge { // every edge contains and source and dest node
 	public Node source;
 	public Node dest;
 	

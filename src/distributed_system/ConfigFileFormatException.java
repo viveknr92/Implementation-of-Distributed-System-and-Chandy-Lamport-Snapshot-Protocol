@@ -4,7 +4,7 @@ public class ConfigFileFormatException extends Exception {
 
 	public ConfigFileFormatException(String string) {
 		// TODO Auto-generated constructor stub
-		super(string);
+		super(string); // custom exception
 	}
 
 }
