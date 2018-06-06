@@ -68,23 +68,24 @@ public class ReadConfigFile {
 			if(!line.contentEquals("")) {
 				throw new ConfigFileFormatException("Missing line break");				
 			}
-			line = sc.nextLine();
 			///////////////////////////////////////////////////////////////////////////////////////////////////
-			String[] neighborNodeInfo = line.split(" ");
-			NeighborNode neighbor = new NeighborNode();
-			while(!line.contentEquals("")) {
-				//TODO
-				if (neighborNodeInfo.length > 3) {
-					if (neighborNodeInfo[3].startsWith("#")) {
-						line = sc.nextLine();
+			Graph graph = new Graph(GlobalParameters.nodes);
+			String[] neighbors;
+			for (int i = 0; sc.hasNextLine() ; i++) { 
+				//read each line and convert to string
+				line = sc.nextLine();
+				for (int j = 0; j < GlobalParameters.nodes ; j++) {
+					//obtain the integer values from comma separated string
+					try {
+						neighbors = line.split(" ");
+						Edge e = new Edge(i,Integer.parseInt(neighbors[j]));
+						graph.edges.add(e); //add an edge with source vertex, destination vertex and weight 
+						System.out.println();
+					} 
+					catch (NumberFormatException e) {
+						//ignore if the character is not an integer
 					}
-					else {
-						throw new ConfigFileFormatException("Unidentified characters in line");				
-					}
-				}
-				else {
-					line = sc.nextLine();
-				}
+				} 
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 			sc.close();
