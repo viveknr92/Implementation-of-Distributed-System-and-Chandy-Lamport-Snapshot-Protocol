@@ -9,12 +9,13 @@ public class ReadConfigFile {
 	public boolean success = false;
 	public ReadConfigFile(String filename) {
 		this.filename = filename;
-		success = readFile(filename);
+		//success = readFile(filename);
 	}
-	public boolean readFile(String filename) {
+	public static Graph readFile(String filename) {
+		Graph graph = null;
 		File file = new File(filename);
 		String line;
-		Scanner sc;
+		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
 			line = sc.nextLine();
@@ -30,7 +31,7 @@ public class ReadConfigFile {
 						line = sc.nextLine();
 					}
 					else {
-						throw new ConfigFileFormatException("Unidentified characters in line");				
+						throw new ConfigFileFormatException("Unidentified characters in line");		
 					}
 				}
 				else {
@@ -39,7 +40,7 @@ public class ReadConfigFile {
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return false;
+				return null;
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 			if(!line.contentEquals("")) {
@@ -47,7 +48,7 @@ public class ReadConfigFile {
 			}
 			line = sc.nextLine();
 			///////////////////////////////////////////////////////////////////////////////////////////////////
-			Graph graph = new Graph(GlobalParameters.nodes);
+			graph = new Graph(GlobalParameters.nodes);
 			while(!line.contentEquals("")) {
 				String[] nodeInfo = line.split(" ");
 				Node nd = new Node();
@@ -89,17 +90,19 @@ public class ReadConfigFile {
 				} 
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////
-			sc.close();
-			return true;
 		} 
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		} 
 		catch (ConfigFileFormatException e) {
 			System.err.println(e.getMessage());
-			return false;
+			return null;
 		}
+		finally {
+			sc.close();
+		}
+		return graph;
 	}
 }
