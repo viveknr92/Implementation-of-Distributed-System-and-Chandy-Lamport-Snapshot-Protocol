@@ -1,4 +1,4 @@
-package distributed_system;
+package distributed_system; //this is a package
 
 import java.io.BufferedReader;
 import java.io.IOException;
