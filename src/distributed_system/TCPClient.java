@@ -29,17 +29,16 @@ public class TCPClient implements Runnable {
 		// TODO Auto-generated method stub
 		try {
 			socket = new Socket(address, port); // Creates a stream socket and connects it to the specified port number on the named host
-			outputstream = socket.getOutputStream();
-			PrintWriter writer = new PrintWriter(outputstream);
-			writer.println("this is from the client");
-			writer.flush();
-			//System.out.println("outputstream"+ inputstream.available());
-			//writer.close();
-			//outputstream.close();
-			//System.out.println("outputstream"+ inputstream.available());
+			outputstream = socket.getOutputStream(); //Closing the returned OutputStream will close the associated socket.
+			//PrintWriter writer = new PrintWriter(outputstream);
+			StreamMessage appmsg = new AppMessage("application message", 0) ;
+			ObjectOutputStream oos = new ObjectOutputStream(outputstream);
+			oos.writeObject(appmsg);
+			oos.flush();
+			//writer.println("this is from the client");
+			//writer.flush(); //Flushes the stream.
 			
 			BufferedReader reader;
-			//socket = new Socket(address, port);
 			System.out.println(socket.isClosed());
 			System.out.println(socket.isConnected());
 			inputstream = socket.getInputStream();
@@ -60,7 +59,10 @@ public class TCPClient implements Runnable {
 		}
 	}
 	public static void main(String[] args) {
-		TCPClient tcpclient = new TCPClient("localhost", 9999);
+		for (int i = 0; i < 2; i++) {
+			new TCPClient("localhost", 9999);
+		} 
+		
 	}
 	
 }

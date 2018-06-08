@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -26,16 +27,22 @@ public class ClientRequestHandler implements Runnable {
 			PrintWriter writer = new PrintWriter(outputstream);
 			writer.println("hello from server");
 			writer.flush();
+			
 			inputstream = sock.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+			AppMessage appmsg = new AppMessage() ;
+			ObjectInputStream objin = new ObjectInputStream(inputstream);
+			appmsg = (AppMessage) objin.readObject();
+			appmsg.printAppMsg();
+			//BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
 			//System.out.println("inputstream"+ inputstream.available());
-			System.out.println(reader.readLine());
-			System.out.println("inputstream"+ inputstream.available());
-			inputstream.close();
+			//System.out.println(reader.readLine());
 			writer.close();
 			outputstream.close();
 			
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
