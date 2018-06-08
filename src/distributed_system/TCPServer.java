@@ -1,43 +1,34 @@
 package distributed_system;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-public class TCPServer{
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+public class TCPServer 
+{
+	ServerSocket ss;
+	ArrayList<ServerConnections> connections = new ArrayList<ServerConnections>();
+	boolean shouldRun = true;
 	
-	private ServerSocket serversocket;
-	private int port;
-	private boolean running;
-	private Thread server;
-	public TCPServer(int port) {
-		// TODO Auto-generated constructor stub
-		this.port = port;
-		try {
-			serversocket = new ServerSocket(port);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		running = true;
-		while(running) {
-			try {
-				Socket sock = serversocket.accept();
-				ClientRequestHandler crh = new ClientRequestHandler(sock);
-				server = new Thread(crh, "client request handler");
-				server.start();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public static void main(String args[])
 	{
-		TCPServer tcpserver = new TCPServer(9999);
+		new TCPServer(Integer.parseInt(args[0]));
 	}
 	
+	//Constructor method
+	public TCPServer(int port) {
+		try {
+			ss = new ServerSocket(port);
+			while(shouldRun) {
+				Socket s = ss.accept(); //Blocks until connection request is received from client
+				ServerConnections sc = new ServerConnections(s, this); //'this' is current obj of TCPServer
+				sc.start(); //Start thread execution, calls run() method
+				connections.add(sc); //Add connection to Array List
+			}
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
 }
