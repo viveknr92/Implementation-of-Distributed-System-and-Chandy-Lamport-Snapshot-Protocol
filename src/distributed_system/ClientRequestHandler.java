@@ -11,32 +11,33 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientRequestHandler implements Runnable {
-	private InputStream dis;
-	private OutputStream dos;
-	private Socket s;
-	public ClientRequestHandler(Socket s, InputStream dis, OutputStream dos) {
+	private Socket sock;
+	private InputStream inputstream;
+	private OutputStream outputstream;
+	public ClientRequestHandler(Socket sock) {
 		// TODO Auto-generated constructor stub
-		this.s = s;
-        this.dis = dis;
-        this.dos = dos;
-	}
-	public ClientRequestHandler() {
-		// TODO Auto-generated constructor stub
+		this.sock = sock;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		try {
-			
-			PrintWriter writer = new PrintWriter(s.getOutputStream());
-			writer.println(" hello from server");
-			writer.close();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		try {	
+			outputstream = sock.getOutputStream();
+			PrintWriter writer = new PrintWriter(outputstream);
+			writer.println("hello from server");
+			writer.flush();
+			inputstream = sock.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+			//System.out.println("inputstream"+ inputstream.available());
 			System.out.println(reader.readLine());
+			System.out.println("inputstream"+ inputstream.available());
+			inputstream.close();
+			writer.close();
+			outputstream.close();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 }

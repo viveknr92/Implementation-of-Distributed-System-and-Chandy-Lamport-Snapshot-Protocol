@@ -25,7 +25,7 @@ public class TCPServer{
 		while(running) {
 			try {
 				Socket sock = serversocket.accept();
-				ClientRequestHandler crh = new ClientRequestHandler(sock, sock.getInputStream(), sock.getOutputStream());
+				ClientRequestHandler crh = new ClientRequestHandler(sock);
 				server = new Thread(crh, "client request handler");
 				server.start();
 			} catch (IOException e) {
