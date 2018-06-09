@@ -2,17 +2,22 @@ package distributed_system;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Graph { // contains nodes and edges
 	public HashMap<Integer, ArrayList<Integer>> adjList;
+	public HashMap<Integer, ArrayList<Node>> adj;
 	public int[][] adjMtx;
-	public ArrayList<Node> nodes;
+	public HashMap<Integer, Node> nodes;
 	public int vertices;
 	public Graph(int vertices) {
 		adjList = new HashMap<Integer, ArrayList<Integer>>();
 		adjMtx =  new int[GlobalParameters.nodes][GlobalParameters.nodes];
-		nodes = new ArrayList<>();
+		nodes = new HashMap<>();
 		this.vertices = vertices;
+	}
+	public void setadjListNodes() {
+		
 	}
 	public void printAdjMtx() {
 		for (int i = 0; i < GlobalParameters.nodes; i++) {

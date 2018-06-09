@@ -9,11 +9,6 @@ public class TCPServer
 	ArrayList<ServerConnections> connections = new ArrayList<ServerConnections>();
 	boolean shouldRun = true;
 	
-	public static void main(String args[])
-	{
-		new TCPServer(Integer.parseInt(args[0]));
-	}
-	
 	//Constructor method
 	public TCPServer(int port) {
 		try {
