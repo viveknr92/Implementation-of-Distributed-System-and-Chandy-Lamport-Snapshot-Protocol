@@ -10,9 +10,10 @@ class AppMessage extends StreamMessage  {
 	String message = "application message";
 	int nodeId;
 	int[] vector;
-	public AppMessage(String message, int nodeId) {
+	public AppMessage(String message, int nodeId, int[] vector) {
 		this.message = message;
 		this.nodeId = nodeId;
+		this.vector = vector;
 	}
 	public AppMessage() {
 		// TODO Auto-generated constructor stub

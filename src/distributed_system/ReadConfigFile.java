@@ -2,6 +2,8 @@ package distributed_system;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ReadConfigFile {
@@ -49,7 +51,7 @@ public class ReadConfigFile {
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 			graph = new Graph(GlobalParameters.nodes);
 			//Read node information and store it in "nodes" in the "graph" object
-			while(!line.contentEquals("")) {
+			while(!line.contentEquals("") && !line.startsWith("#")) {
 				String[] nodeInfo = line.split(" ");
 				Node nd = new Node();
 				nd.setNode(nodeInfo);
@@ -72,23 +74,22 @@ public class ReadConfigFile {
 				throw new ConfigFileFormatException("Missing line break");				
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////
-			String[] neighbors; // Read Adjacency list and store the result in edges in graph object
+			String[] words; // Read Adjacency list and store the result in Hashmap
 			for (int i = 0; sc.hasNextLine() ; i++) { 
-				//read each line and convert to string
-				line = sc.nextLine();
-				for (int j = 0; j < GlobalParameters.nodes ; j++) {
-					//obtain the integer values from space separated string
-					try {
-						neighbors = line.split(" ");
-						Edge e = new Edge(graph.nodes.get(i),graph.nodes.get(Integer.parseInt(neighbors[j])));
-						graph.edges.add(e); //add an edge with source vertex, destination vertex
-						System.out.println();
-					} 
-					catch (NumberFormatException e) {
-						//ignore if the character is not an integer
+				line = sc.nextLine(); //read each line and convert to string
+				ArrayList<Integer> neighbors = new ArrayList<>();
+				try {
+					words = line.split(" ");
+					for (int j = 0; j < words.length; j++) { 
+						neighbors.add(Integer.parseInt(words[j])); //obtain the integer values from space separated string
 					}
 				} 
+				catch (NumberFormatException e) {
+					//ignore if the character is not an integer
+				} 
+				graph.adjList.put(i, neighbors);
 			}
+			System.out.println(graph.adjList);
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 		} 
 		catch (FileNotFoundException e) {
