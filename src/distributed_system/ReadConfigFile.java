@@ -26,7 +26,7 @@ public class ReadConfigFile {
 			////////////////////////////////////////////////////////////////////////////////////////
 			try {
 				GlobalParameters.setGlobalParameters(globalparameters);
-				GlobalParameters.print();
+				//GlobalParameters.print();
 				if (globalparameters.length > 6) { // if the line contains more than 6 words
 					if (globalparameters[6].startsWith("#")) {
 						line = sc.nextLine(); // ignore comments
@@ -55,7 +55,6 @@ public class ReadConfigFile {
 				String[] nodeInfo = line.split(" ");
 				Node nd = new Node();
 				nd.setNode(nodeInfo[1], Integer.parseInt(nodeInfo[2]));
-				nd.printNode();
 				graph.nodes.put(Integer.parseInt(nodeInfo[0]), nd);
 				if (nodeInfo.length > 3) { // if the line contains more than 3 words
 					if (nodeInfo[3].startsWith("#")) {
@@ -89,7 +88,7 @@ public class ReadConfigFile {
 				} 
 				graph.adjList.put(i, neighbors);
 			}
-			System.out.println(graph.adjList);
+			//System.out.println(graph.adjList);
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 		} 
 		catch (FileNotFoundException e) {
