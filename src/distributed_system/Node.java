@@ -4,6 +4,7 @@ public class Node {
 	public int nodeId; 
 	public String hostName; 
 	public int port;
+	public boolean state; //Active or passive
 	public void setNode(String[] nodeInfo) {
 		nodeId = Integer.parseInt(nodeInfo[0]);
 		hostName = nodeInfo[1] + ".utdallas.edu";

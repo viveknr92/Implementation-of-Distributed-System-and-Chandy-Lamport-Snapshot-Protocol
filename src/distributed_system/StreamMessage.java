@@ -4,12 +4,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class StreamMessage implements Serializable {
-
+	String message;
+	int nodeId;
+	public void printAppMsg()
+	{
+		System.out.println(this.message);
+		System.out.println(this.nodeId);
+	}
 }
 class AppMessage extends StreamMessage implements Serializable{
-	String message = "application message";
-	int nodeId;
 	int[] vector;
+	
 	public AppMessage(String message, int nodeId, int[] vector) {
 		this.message = message;
 		this.nodeId = nodeId;
@@ -22,11 +27,6 @@ class AppMessage extends StreamMessage implements Serializable{
 	}
 	public AppMessage() {
 		// TODO Auto-generated constructor stub
-	}
-	public void printAppMsg()
-	{
-		System.out.println(this.message);
-		System.out.println(this.nodeId);
 	}
 }
 class MarkerMessage extends StreamMessage {

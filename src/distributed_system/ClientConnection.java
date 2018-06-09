@@ -45,7 +45,6 @@ public class ClientConnection extends Thread {
 			
 			//din = new DataInputStream(s.getInputStream());
 			//dout = new DataOutputStream(s.getOutputStream());
-			
 			while(shouldRun) {
 //					while(din.available()==0) { //Check for any reply from server
 //						try {					//If not sleep until get reply
@@ -55,8 +54,14 @@ public class ClientConnection extends Thread {
 //						}
 //					}
 					//StreamMessage msg = new AppMessage();
-					AppMessage reply = new AppMessage();
+					StreamMessage reply = new StreamMessage();
 					reply = (AppMessage) din.readObject(); //If reply from server print it out to console
+					if(reply instanceof AppMessage) {
+						System.out.println("app msg");
+					}
+					if(reply instanceof MarkerMessage) {
+						System.out.println("marker msg");
+					}
 					reply.printAppMsg();
 					//String reply = din.readUTF();
 					//System.out.println(reply);
