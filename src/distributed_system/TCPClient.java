@@ -41,7 +41,11 @@ public class TCPClient {
 			}
 
 			String input = console.nextLine();
-			cc.sendStringtoServer(input);
+			int[] vector = {0,0};
+			AppMessage appmsg = new AppMessage(input, 0, vector);
+			appmsg.setAppMessage(input, 1, vector);
+			cc.sendStringtoServer(appmsg);
+			//cc.sendStringtoServer(input);
 		}
 	}
 }

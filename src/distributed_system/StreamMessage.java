@@ -6,11 +6,16 @@ import java.io.Serializable;
 public class StreamMessage implements Serializable {
 
 }
-class AppMessage extends StreamMessage  {
+class AppMessage extends StreamMessage implements Serializable{
 	String message = "application message";
 	int nodeId;
 	int[] vector;
 	public AppMessage(String message, int nodeId, int[] vector) {
+		this.message = message;
+		this.nodeId = nodeId;
+		this.vector = vector;
+	}
+	public void setAppMessage(String message, int nodeId, int[] vector) {
 		this.message = message;
 		this.nodeId = nodeId;
 		this.vector = vector;
