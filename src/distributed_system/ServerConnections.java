@@ -1,41 +1,30 @@
 package distributed_system;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ServerConnections extends Thread{
+public class ServerConnections implements Runnable{
 	
 	Socket socket;
 	TCPServer server;
 	ObjectInputStream din;
 	ObjectOutputStream dout;
-	//DataInputStream din;
-	//DataOutputStream dout;
-	boolean shouldRun = true;
+	boolean shouldRun;
 	
 	public ServerConnections(Socket socket, TCPServer server) {
-		super("ServerConnectionsThread"); //Allocates a new thread named ServerConneectionsThread
 		this.socket = socket;
 		this.server = server;
-		
+		shouldRun = true;
 	}
 	
-	public void sendStringtoClient(AppMessage text) { //Send to individual client
-		try {
-			dout.writeObject(text);
-			//dout.writeUTF(text);
-			dout.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+	public synchronized void sendStringtoClient(AppMessage text) throws IOException { //Send to individual client
+		dout.writeObject(text);
+		dout.flush();
 	}
 	
-	public void sendStringtoAllClients(AppMessage text) {
-		
+	public synchronized void sendStringtoAllClients(AppMessage text) throws IOException {
 		for (int i = 0; i < server.connections.size(); i++) { //Send to all clients by checking no of server connections
 			ServerConnections sc = server.connections.get(i);
 			sc.sendStringtoClient( text );
@@ -48,35 +37,25 @@ public class ServerConnections extends Thread{
 			dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
 			din = new ObjectInputStream(socket.getInputStream()); // Input Stream
 			
-			//din = new DataInputStream(socket.getInputStream());
-			//dout = new DataOutputStream(socket.getOutputStream());
-			
 			while(shouldRun) {
-//				while(din.available() == 0) {	//Wait until any data sent from client
-//					try {
-//						Thread.sleep(1);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-				//Read any data sent from client and send 
-				//it to all other clients
-				//String textIn = din.readUTF();
 				AppMessage textIn = (AppMessage) din.readObject();
+				System.out.println(Thread.currentThread().getName());
 				textIn.printAppMsg();
 				sendStringtoAllClients(textIn);
 			}
-			
-			din.close();
-			dout.close();
-			socket.close(); 
-			
-		} catch (IOException e) {
+			close(); 	
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	public void close() throws IOException {
+		din.close();
+		dout.close();
+		socket.close();	
 	}
 }

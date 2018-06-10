@@ -1,38 +1,27 @@
 package distributed_system;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-
-
-public class ClientConnection extends Thread {
+public class ClientConnection implements Runnable {
 
 	Socket s;
 	ObjectInputStream din;
 	ObjectOutputStream dout;
-	//DataInputStream din;
-	//DataOutputStream dout;
-	boolean shouldRun = true;
+	boolean shouldRun;
 	
 	public ClientConnection(Socket socket, TCPClient client) {
-		s = socket;		
-		 
+		s = socket;
+		din = null;
+		dout = null;
+		shouldRun = true;
 	}
-	
-	
-	public void sendStringtoServer(AppMessage text) {
-		try {
-			dout.writeObject(text);	//Write input from user to the server
-			//dout.writeUTF(text);
-			dout.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			close();
-		} 
+	public synchronized void sendStringtoServer(AppMessage text) throws IOException, InterruptedException {
+		System.out.println(Thread.currentThread().getName() + "client : sendStringtoServer");
+		dout.writeObject(text);	//Write input from user to the server
+		dout.flush();
 	}
 	
 	//Thread method 
@@ -42,30 +31,15 @@ public class ClientConnection extends Thread {
 			//always declare ObjectOutputStream before ObjectInputStream at both client and server
 			dout = new ObjectOutputStream(s.getOutputStream()); //Output stream 
 			din = new ObjectInputStream(s.getInputStream()); // Input stream
-			
-			//din = new DataInputStream(s.getInputStream());
-			//dout = new DataOutputStream(s.getOutputStream());
+
+			System.out.println(Thread.currentThread().getName() + " : set IO stream");
 			while(shouldRun) {
-//					while(din.available()==0) { //Check for any reply from server
-//						try {					//If not sleep until get reply
-//							Thread.sleep(1);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//					}
-					//StreamMessage msg = new AppMessage();
-					StreamMessage reply = new StreamMessage();
-					reply = (AppMessage) din.readObject(); //If reply from server print it out to console
-					if(reply instanceof AppMessage) {
-						System.out.println("app msg");
-					}
-					if(reply instanceof MarkerMessage) {
-						System.out.println("marker msg");
-					}
-					reply.printAppMsg();
-					//String reply = din.readUTF();
-					//System.out.println(reply);
-				} 
+				StreamMessage reply = new StreamMessage();
+				reply = (AppMessage) din.readObject(); //If reply from server print it out to console
+				System.out.println(Thread.currentThread().getName() + " : reply from server available");
+				reply.printAppMsg();
+			}
+			close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -76,14 +50,10 @@ public class ClientConnection extends Thread {
 	}
 	
 	//Close all connections
-	public void close() {
-		try {
-			din.close();
-			dout.close();
-			s.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void close() throws IOException {
+		din.close();
+		dout.close();
+		s.close();
 		
 	}
 	

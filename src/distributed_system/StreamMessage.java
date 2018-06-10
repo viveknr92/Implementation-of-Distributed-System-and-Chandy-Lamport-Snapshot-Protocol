@@ -1,6 +1,5 @@
 package distributed_system;
 
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class StreamMessage implements Serializable {
@@ -8,8 +7,7 @@ public class StreamMessage implements Serializable {
 	int nodeId;
 	public void printAppMsg()
 	{
-		System.out.println(this.message);
-		System.out.println(this.nodeId);
+		System.out.println(this.message + " from " + this.nodeId);
 	}
 }
 class AppMessage extends StreamMessage implements Serializable{

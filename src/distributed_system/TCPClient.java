@@ -1,40 +1,39 @@
 package distributed_system;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 
-public class TCPClient {
+public class TCPClient implements Runnable{
 	
 	ClientConnection cc;
+	Node source;
+	Node dest;
 	
-	public static void main(String[] args) {
-		new TCPClient(args[0], Integer.parseInt(args[1])); //Create a constructor
+	public TCPClient(Node source_node, Node dest_node) { //Constructor method
+		this.source = source_node;
+		this.dest = dest_node;
 	}
-	
-	public TCPClient(String address, int port) { //Constructor method
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 		try {
-			Socket s = new Socket(address, port); //Blocks until it connects to server
+			Socket s = new Socket(dest.hostName, dest.port); //Blocks until it connects to server
+			System.out.println(Thread.currentThread().getName() + "Client : connected to server : " + dest.nodeId);
+			int[] vector = {0,0};
+			AppMessage appmsg = new AppMessage("appmsg ", source.nodeId , vector);
 			cc = new ClientConnection(s, this);
-			cc.start(); //Start a new thread, calls run() method
-			listenforinput(); //Get input from user and sent it to server
+			Thread thread = new Thread(cc, "client connections thread");
+			thread.start(); //Start a new thread, calls run() method
+			Thread.sleep(1000);
+			cc.sendStringtoServer(appmsg);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-	
-	public void listenforinput() {
-
-		//while(true) {
-			int[] vector = {0,0};
-			AppMessage appmsg = new AppMessage("string", 0, vector);
-			cc.sendStringtoServer(appmsg);
-			
-		//}
 	}
 }

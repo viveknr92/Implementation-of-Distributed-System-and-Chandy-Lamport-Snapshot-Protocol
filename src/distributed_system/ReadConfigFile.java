@@ -54,7 +54,7 @@ public class ReadConfigFile {
 			while(!line.contentEquals("") && !line.startsWith("#")) {
 				String[] nodeInfo = line.split(" ");
 				Node nd = new Node();
-				nd.setNode(nodeInfo[1], Integer.parseInt(nodeInfo[2]));
+				nd.setNode(Integer.parseInt(nodeInfo[0]), nodeInfo[1], Integer.parseInt(nodeInfo[2]));
 				graph.nodes.put(Integer.parseInt(nodeInfo[0]), nd);
 				if (nodeInfo.length > 3) { // if the line contains more than 3 words
 					if (nodeInfo[3].startsWith("#")) {
