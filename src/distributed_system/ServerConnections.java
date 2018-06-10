@@ -27,6 +27,7 @@ public class ServerConnections implements Runnable{
 	public synchronized void sendStringtoAllClients(AppMessage text) throws IOException {
 		for (int i = 0; i < server.connections.size(); i++) { //Send to all clients by checking no of server connections
 			ServerConnections sc = server.connections.get(i);
+			System.out.print(Thread.currentThread().getName() + " : Send to clients ");
 			sc.sendStringtoClient( text );
 		}
 	}
@@ -39,7 +40,7 @@ public class ServerConnections implements Runnable{
 			
 			while(shouldRun) {
 				AppMessage textIn = (AppMessage) din.readObject();
-				System.out.println(Thread.currentThread().getName());
+				System.out.print(Thread.currentThread().getName() + " : Received ");
 				textIn.printAppMsg();
 				sendStringtoAllClients(textIn);
 			}

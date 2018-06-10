@@ -19,7 +19,7 @@ public class ClientConnection implements Runnable {
 		shouldRun = true;
 	}
 	public synchronized void sendStringtoServer(AppMessage text) throws IOException, InterruptedException {
-		System.out.println(Thread.currentThread().getName() + "client : sendStringtoServer");
+		System.out.println(Thread.currentThread().getName() + " : sendStringtoServer");
 		dout.writeObject(text);	//Write input from user to the server
 		dout.flush();
 	}

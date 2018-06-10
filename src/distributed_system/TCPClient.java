@@ -20,7 +20,7 @@ public class TCPClient implements Runnable{
 		// TODO Auto-generated method stub
 		try {
 			Socket s = new Socket(dest.hostName, dest.port); //Blocks until it connects to server
-			System.out.println(Thread.currentThread().getName() + "Client : connected to server : " + dest.nodeId);
+			System.out.println(Thread.currentThread().getName() + " : connected to server : " + dest.nodeId);
 			int[] vector = {0,0};
 			AppMessage appmsg = new AppMessage("appmsg ", source.nodeId , vector);
 			cc = new ClientConnection(s, this);

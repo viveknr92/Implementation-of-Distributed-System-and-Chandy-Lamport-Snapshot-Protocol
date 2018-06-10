@@ -25,6 +25,7 @@ public class TCPServer implements Runnable
 		try {
 			ss = new ServerSocket(source.port);
 			System.out.println(Thread.currentThread().getName() + " : server socket created on node : " + source.nodeId);
+			//Thread.sleep(2000);
 			// TODO Auto-generated method stub
 			while(shouldRun) {
 				Socket s = null;
