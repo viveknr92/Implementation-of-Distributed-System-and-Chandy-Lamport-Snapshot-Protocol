@@ -30,22 +30,11 @@ public class TCPClient {
 	
 	public void listenforinput() {
 
-		Scanner console = new Scanner(System.in);
-		while(true) {
-			while(!console.hasNextLine()) { //check console has any message to send to server
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}			
-			}
-
-			String input = console.nextLine();
+		//while(true) {
 			int[] vector = {0,0};
-			AppMessage appmsg = new AppMessage(input, 0, vector);
-			appmsg.setAppMessage(input, 1, vector);
+			AppMessage appmsg = new AppMessage("string", 0, vector);
 			cc.sendStringtoServer(appmsg);
-			//cc.sendStringtoServer(input);
-		}
+			
+		//}
 	}
 }

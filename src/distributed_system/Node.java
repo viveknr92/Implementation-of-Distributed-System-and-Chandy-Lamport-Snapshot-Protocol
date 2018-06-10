@@ -6,7 +6,7 @@ public class Node {
 	public int port;
 	public boolean state; //Active or passive
 	public void setNode(String hostname, int port) {
-		this.hostName = hostname + ".utdallas.edu";
+		this.hostName = hostname;
 		this.port = port;
 	}
 	public void printNode() {
