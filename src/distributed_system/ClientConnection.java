@@ -18,7 +18,7 @@ public class ClientConnection implements Runnable {
 		dout = null;
 		shouldRun = true;
 	}
-	public synchronized void sendStringtoServer(AppMessage text) throws IOException, InterruptedException {
+	public void sendStringtoServer(AppMessage text) throws IOException, InterruptedException {
 		System.out.println(Thread.currentThread().getName() + " : sendStringtoServer");
 		dout.writeObject(text);	//Write input from user to the server
 		dout.flush();
@@ -31,7 +31,6 @@ public class ClientConnection implements Runnable {
 			//always declare ObjectOutputStream before ObjectInputStream at both client and server
 			dout = new ObjectOutputStream(s.getOutputStream()); //Output stream 
 			din = new ObjectInputStream(s.getInputStream()); // Input stream
-
 			System.out.println(Thread.currentThread().getName() + " : set IO stream");
 			while(shouldRun) {
 				StreamMessage reply = new StreamMessage();
@@ -47,13 +46,21 @@ public class ClientConnection implements Runnable {
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		finally {
+			close();
+		}
 	}
 	
 	//Close all connections
-	public void close() throws IOException {
-		din.close();
-		dout.close();
-		s.close();
+	public void close() {
+		try {
+			s.close();
+			din.close();
+			dout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

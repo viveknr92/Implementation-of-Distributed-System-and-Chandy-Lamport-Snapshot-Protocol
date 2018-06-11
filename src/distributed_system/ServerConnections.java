@@ -4,59 +4,77 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 
 public class ServerConnections implements Runnable{
 	
-	Socket socket;
-	TCPServer server;
+	public BlockingQueue<Socket> connections;
+	public Socket socket;
 	ObjectInputStream din;
 	ObjectOutputStream dout;
 	boolean shouldRun;
 	
-	public ServerConnections(Socket socket, TCPServer server) {
-		this.socket = socket;
-		this.server = server;
+	public ServerConnections(BlockingQueue<Socket> connections) {
+		this.connections = connections;
 		shouldRun = true;
 	}
 	
-	public synchronized void sendStringtoClient(AppMessage text) throws IOException { //Send to individual client
+	public void sendStringtoClient(AppMessage text) throws IOException { //Send to individual client
 		dout.writeObject(text);
 		dout.flush();
 	}
 	
-	public synchronized void sendStringtoAllClients(AppMessage text) throws IOException {
-		for (int i = 0; i < server.connections.size(); i++) { //Send to all clients by checking no of server connections
-			ServerConnections sc = server.connections.get(i);
+	public void sendStringtoAllClients(AppMessage text) throws IOException, InterruptedException {
+		while (!connections.isEmpty()) { //Send to all clients by checking no of server connections
 			System.out.print(Thread.currentThread().getName() + " : Send to clients ");
-			sc.sendStringtoClient( text );
+			sendStringtoClient(text);
 		}
 	}
 	
 	public void run(){
 		try {
-			//always declare ObjectOutputStream before ObjectInputStream at both client and server
-			dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
-			din = new ObjectInputStream(socket.getInputStream()); // Input Stream
+			//System.out.println("server connectijs" + socket);
 			
 			while(shouldRun) {
-				AppMessage textIn = (AppMessage) din.readObject();
-				System.out.print(Thread.currentThread().getName() + " : Received ");
-				textIn.printAppMsg();
-				sendStringtoAllClients(textIn);
+				synchronized (connections) {
+					if(!connections.isEmpty()) {
+						socket = connections.element();
+						dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
+						din = new ObjectInputStream(socket.getInputStream()); // Input Stream
+						AppMessage textIn = (AppMessage) din.readObject();
+						System.out.print(Thread.currentThread().getName() + " : Received ");
+						textIn.printAppMsg();
+						sendStringtoAllClients(textIn);
+						connections.remove();
+						Thread.sleep(1000);
+					}
+					else {
+						connections.wait();
+					}
+				}
+
+				//always declare ObjectOutputStream before ObjectInputStream at both client and server
 			}
-			close(); 	
+				
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}
-		
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
 	}
-	public void close() throws IOException {
-		din.close();
-		dout.close();
-		socket.close();	
+	public void close() {
+		try {
+			din.close();
+			dout.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 }

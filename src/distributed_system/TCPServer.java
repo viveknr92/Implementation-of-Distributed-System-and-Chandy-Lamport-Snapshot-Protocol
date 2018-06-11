@@ -4,19 +4,22 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class TCPServer implements Runnable
 {
 	public ServerSocket ss;
+	public Socket socket;
 	public Node source;
-	public ArrayList<ServerConnections> connections;
+	public BlockingQueue<Socket> connections;
 	boolean shouldRun;
 	
 	//Constructor method
-	public TCPServer(Node source) {
+	public TCPServer(BlockingQueue<Socket> connections, Node source) {
 		this.ss = null;
 		this.source = source;
-		this.connections = new ArrayList<ServerConnections>();
+		this.connections = connections;
 		this.shouldRun = true;
 	}
 
@@ -25,27 +28,22 @@ public class TCPServer implements Runnable
 		try {
 			ss = new ServerSocket(source.port);
 			System.out.println(Thread.currentThread().getName() + " : server socket created on node : " + source.nodeId);
-			//Thread.sleep(2000);
 			// TODO Auto-generated method stub
 			while(shouldRun) {
-				Socket s = null;
-				try {
-					s = ss.accept();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				socket = ss.accept();
 				System.out.println(Thread.currentThread().getName() + " : Waiting for client"); //Blocks until connection request is received from client
-				ServerConnections sc = new ServerConnections(s, this); //'this' is current obj of TCPServer
-				Thread thread = new Thread(sc, "server connections");
-				thread.start(); //Start thread execution, calls run() method
-				System.out.println(Thread.currentThread().getName() + " : Connected to client");
-				connections.add(sc); //Add connection to Array List
-				System.out.println(Thread.currentThread().getName() + " : number of clients connected : " + connections.size());
+				synchronized (connections) {
+					connections.put(socket);
+					connections.notify();
+					 Thread.sleep(1000);
+				}
+
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} 
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
