@@ -21,6 +21,7 @@ public class Main {
 		producer.start();
 		consumer.start(); //Start thread execution, calls run() method
 		
+		Thread.sleep(10000);
 //		for (int i = 0; i < 2; i++) {
 //			TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
 //			Thread client_t = new Thread(client, "client ");

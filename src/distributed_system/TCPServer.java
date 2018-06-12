@@ -33,7 +33,6 @@ public class TCPServer implements Runnable
 				socket = ss.accept();
 				synchronized (connections) {
 					connections.put(socket);
-					System.out.println("Number of clients : "+connections.size());
 					connections.notify();
 				}
 			}

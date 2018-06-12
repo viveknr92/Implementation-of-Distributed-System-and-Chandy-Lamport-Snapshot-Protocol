@@ -27,7 +27,6 @@ public class TCPClient implements Runnable{
 	
 	public void sendStringtoServer(AppMessage text) throws IOException, InterruptedException {
 		dout = new ObjectOutputStream(s.getOutputStream()); //Output stream 
-		System.out.println(Thread.currentThread().getName() + " : sendStringtoServer");
 		dout.writeObject(text);	//Write input from user to the server
 		dout.flush();
 	}
@@ -39,7 +38,7 @@ public class TCPClient implements Runnable{
 			din = new ObjectInputStream(s.getInputStream());
 			StreamMessage reply = new StreamMessage();
 			reply = (AppMessage) din.readObject(); //If reply from server print it out to console
-			System.out.println(Thread.currentThread().getName() + " : reply from server available");
+			System.out.print(Thread.currentThread().getName() + " : reply from server available : ");
 			reply.printAppMsg();
 		}
 		catch (ClassNotFoundException | IOException e) {

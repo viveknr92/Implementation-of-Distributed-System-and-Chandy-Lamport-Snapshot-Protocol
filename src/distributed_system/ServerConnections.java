@@ -34,28 +34,22 @@ public class ServerConnections implements Runnable{
 	
 	public void run(){
 		try {
-			
 			while(shouldRun) {
-					if(connections.isEmpty()) {
-						synchronized (connections) {
-							connections.wait();
-						}
-					}
-					else {
-						socket = connections.peek();
-						System.out.println(socket);
-						//always declare ObjectOutputStream before ObjectInputStream at both client and server
-						dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
-						din = new ObjectInputStream(socket.getInputStream()); // Input Stream
-						AppMessage textIn = (AppMessage) din.readObject();
-						System.out.print(Thread.currentThread().getName() + " : Received ");
-						textIn.printAppMsg();
-						//sendStringtoClient(textIn);
-						sendStringtoAllClients(textIn);
-						//Thread.sleep(10000);
+				if(connections.isEmpty()) {
+					synchronized (connections) {
+						connections.wait();
 					}
 				}
-				
+				else {
+					socket = connections.peek();
+					//always declare ObjectOutputStream before ObjectInputStream at both client and server
+					dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
+					din = new ObjectInputStream(socket.getInputStream()); // Input Stream
+					AppMessage textIn = (AppMessage) din.readObject();
+					textIn.printAppMsg();
+					sendStringtoAllClients(textIn);
+				}
+			}	
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
