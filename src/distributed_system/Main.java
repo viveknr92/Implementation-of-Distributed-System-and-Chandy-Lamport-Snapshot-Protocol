@@ -12,6 +12,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		Graph g = ReadConfigFile.readFile("config.txt");
 		BlockingQueue<Socket> socket_queue = new ArrayBlockingQueue<>(10);
+		BlockingQueue<AppMessage> message_queue = new ArrayBlockingQueue<>(10);
 		int nodeId = Integer.parseInt(args[0]);
 		
 		TCPServer tcp0 = new TCPServer(socket_queue, g.nodes.get(0));
@@ -20,18 +21,25 @@ public class Main {
 		Thread consumer = new Thread(sc, "server connections");
 		producer.start();
 		consumer.start(); //Start thread execution, calls run() method
-		for (int i = 0; i < 3; i++) {
-			TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
-			Thread client_thread = new Thread(client, "client Thread ");
-			client_thread.start();
+		
+//		for (int i = 0; i < 10; i++) {
+//			TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
+//			Thread client_t = new Thread(client);
+//			int[] vector = {0,0};
+//			AppMessage appmsg = new AppMessage("appmsg ", g.nodes.get(1).nodeId , vector);
+//			client.sendStringtoServer(appmsg);
+//			client_t.start();			
+//		}
+		ArrayList<Integer> neighbor = g.adjList.get(nodeId);
+		for(int n : neighbor) {
+			TCPClient client = new TCPClient(g.nodes.get(nodeId), g.nodes.get(n));
+			Thread client_t = new Thread(client);
+			int[] vector = {0,0};
+			AppMessage appmsg = new AppMessage("appmsg ", g.nodes.get(n).nodeId , vector);
+			client.sendStringtoServer(appmsg);
+			client_t.start();
 		}
-//		TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
-//		Thread client_thread = new Thread(client, "client Thread 1");
-//		
-//		TCPClient client2 = new TCPClient(g.nodes.get(1), g.nodes.get(0));
-//		Thread client_thread2 = new Thread(client, "client Thread 2");
-//		
-//		client_thread.start();
-//		client_thread2.start();
+		
+		
 	}
 }
