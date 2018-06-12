@@ -32,12 +32,11 @@ public class TCPServer implements Runnable
 			while(shouldRun) {
 				socket = ss.accept();
 				System.out.println(Thread.currentThread().getName() + " : Waiting for client"); //Blocks until connection request is received from client
+				
 				synchronized (connections) {
 					connections.put(socket);
 					connections.notify();
-					 Thread.sleep(1000);
 				}
-
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();

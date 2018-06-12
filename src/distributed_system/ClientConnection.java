@@ -38,7 +38,6 @@ public class ClientConnection implements Runnable {
 				System.out.println(Thread.currentThread().getName() + " : reply from server available");
 				reply.printAppMsg();
 			}
-			close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();

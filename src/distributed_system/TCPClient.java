@@ -26,7 +26,7 @@ public class TCPClient implements Runnable{
 			cc = new ClientConnection(s, this);
 			Thread thread = new Thread(cc, "client connections thread");
 			thread.start(); //Start a new thread, calls run() method
-			Thread.sleep(1000);
+			//Thread.sleep(1);
 			cc.sendStringtoServer(appmsg);
 			
 		} catch (IOException e) {

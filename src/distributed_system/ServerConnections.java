@@ -26,8 +26,9 @@ public class ServerConnections implements Runnable{
 	
 	public void sendStringtoAllClients(AppMessage text) throws IOException, InterruptedException {
 		while (!connections.isEmpty()) { //Send to all clients by checking no of server connections
-			System.out.print(Thread.currentThread().getName() + " : Send to clients ");
+			System.out.println(Thread.currentThread().getName() + " : Send to clients ");
 			sendStringtoClient(text);
+			connections.remove();
 		}
 	}
 	
@@ -36,25 +37,25 @@ public class ServerConnections implements Runnable{
 			//System.out.println("server connectijs" + socket);
 			
 			while(shouldRun) {
-				synchronized (connections) {
-					if(!connections.isEmpty()) {
-						socket = connections.element();
+					if(connections.isEmpty()) {
+						synchronized (connections) {
+							connections.wait();
+						}
+					}
+					else {
+						socket = connections.peek();
+						System.out.println(socket);
+						//always declare ObjectOutputStream before ObjectInputStream at both client and server
 						dout = new ObjectOutputStream(socket.getOutputStream()); // Output Stream		
 						din = new ObjectInputStream(socket.getInputStream()); // Input Stream
 						AppMessage textIn = (AppMessage) din.readObject();
 						System.out.print(Thread.currentThread().getName() + " : Received ");
 						textIn.printAppMsg();
+						//sendStringtoClient(textIn);
 						sendStringtoAllClients(textIn);
-						connections.remove();
-						Thread.sleep(1000);
-					}
-					else {
-						connections.wait();
+						//Thread.sleep(10000);
 					}
 				}
-
-				//always declare ObjectOutputStream before ObjectInputStream at both client and server
-			}
 				
 		} 
 		catch (IOException e) {
