@@ -12,19 +12,18 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		Graph g = ReadConfigFile.readFile("config.txt");
 		BlockingQueue<Socket> socket_queue = new ArrayBlockingQueue<>(10);
-		BlockingQueue<AppMessage> message_queue = new ArrayBlockingQueue<>(10);
 		int nodeId = Integer.parseInt(args[0]);
 		
-		TCPServer tcp0 = new TCPServer(socket_queue, g.nodes.get(0));
+		TCPServer tcp0 = new TCPServer(socket_queue, g.nodes.get(nodeId));
 		Thread producer = new Thread(tcp0, "Server thread " + nodeId);
 		ServerConnections sc = new ServerConnections(socket_queue); //'this' is current obj of TCPServer
 		Thread consumer = new Thread(sc, "server connections");
 		producer.start();
 		consumer.start(); //Start thread execution, calls run() method
 		
-//		for (int i = 0; i < 10; i++) {
+//		for (int i = 0; i < 2; i++) {
 //			TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
-//			Thread client_t = new Thread(client);
+//			Thread client_t = new Thread(client, "client ");
 //			int[] vector = {0,0};
 //			AppMessage appmsg = new AppMessage("appmsg ", g.nodes.get(1).nodeId , vector);
 //			client.sendStringtoServer(appmsg);

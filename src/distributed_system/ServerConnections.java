@@ -25,8 +25,8 @@ public class ServerConnections implements Runnable{
 	}
 	
 	public void sendStringtoAllClients(AppMessage text) throws IOException, InterruptedException {
+		System.out.println("Number of clients : "+ connections.size());
 		while (!connections.isEmpty()) { //Send to all clients by checking no of server connections
-			System.out.println(Thread.currentThread().getName() + " : Send to clients ");
 			sendStringtoClient(text);
 			connections.remove();
 		}
@@ -34,7 +34,6 @@ public class ServerConnections implements Runnable{
 	
 	public void run(){
 		try {
-			//System.out.println("server connectijs" + socket);
 			
 			while(shouldRun) {
 					if(connections.isEmpty()) {

@@ -31,10 +31,9 @@ public class TCPServer implements Runnable
 			// TODO Auto-generated method stub
 			while(shouldRun) {
 				socket = ss.accept();
-				System.out.println(Thread.currentThread().getName() + " : Waiting for client"); //Blocks until connection request is received from client
-				
 				synchronized (connections) {
 					connections.put(socket);
+					System.out.println("Number of clients : "+connections.size());
 					connections.notify();
 				}
 			}
