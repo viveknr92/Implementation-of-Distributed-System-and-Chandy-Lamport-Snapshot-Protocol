@@ -27,8 +27,10 @@ public class ServerConnections implements Runnable{
 	public void sendStringtoAllClients(AppMessage text) throws IOException, InterruptedException {
 		System.out.println("Number of clients : "+ connections.size());
 		while (!connections.isEmpty()) { //Send to all clients by checking no of server connections
-			sendStringtoClient(text);
-			connections.remove();
+			sendStringtoClient(text); //How do we know to which client sending text?
+			connections.remove(); //Since using blocking queue sending to clients in the queue and 
+									//removing it
+				//Why not echoing?
 		}
 	}
 	

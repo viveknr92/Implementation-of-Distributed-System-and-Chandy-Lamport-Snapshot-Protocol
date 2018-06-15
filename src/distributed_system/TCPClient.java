@@ -39,7 +39,7 @@ public class TCPClient implements Runnable{
 			StreamMessage reply = new StreamMessage();
 			reply = (AppMessage) din.readObject(); //If reply from server print it out to console
 			System.out.print(Thread.currentThread().getName() + " : reply from server available : ");
-			reply.printAppMsg();
+			reply.printAppMsg(); //Printing from which server it is received or from which client?
 		}
 		catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
