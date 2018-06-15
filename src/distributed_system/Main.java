@@ -12,22 +12,27 @@ import java.util.concurrent.BlockingQueue;
 public class Main {
 	
 	public int nodeId;
+	public int[] vector;
 	public Graph g = ReadConfigFile.readFile("config.txt");
 	public BlockingQueue<Socket> socket_queue = new ArrayBlockingQueue<>(10);
-	private int[] vector;
+	
+	
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
 		Main mainObj = new Main();
+		mainObj.vector = new int[GlobalParameters.nodes]; 
 		mainObj.nodeId = Integer.parseInt(args[0]);
 		TCPServer tcp0 = new TCPServer(mainObj.socket_queue, mainObj.g.nodes.get(mainObj.nodeId));
 		Thread producer = new Thread(tcp0, "Server thread " + mainObj.nodeId);
-		ServerConnections sc = new ServerConnections(mainObj.socket_queue); //'this' is current obj of TCPServer
+		ServerConnections sc = new ServerConnections(mainObj.socket_queue, mainObj.nodeId); //'this' is current obj of TCPServer
 		Thread consumer = new Thread(sc, "server connections");
 		producer.start();
 		consumer.start(); //Start thread execution, calls run() method
 		
 		Thread.sleep(10000);
+		
+		mainObj.sendMessages();
 //		for (int i = 0; i < 2; i++) {
 //			TCPClient client = new TCPClient(g.nodes.get(1), g.nodes.get(0));
 //			Thread client_t = new Thread(client, "client ");
@@ -66,7 +71,9 @@ public class Main {
 			for(int i = 0; i < numMsgs; i++) {
 				if(isActive ) {
 					this.vector[this.nodeId]++;
-					System.out.println(vector);
+					//System.out.println(vector);
+					appmsg.vector = new int[this.vector.length];
+					System.arraycopy( this.vector, 0, appmsg.vector, 0, this.vector.length );
 					try {
 						client.sendStringtoServer(appmsg);
 						client_t.start();

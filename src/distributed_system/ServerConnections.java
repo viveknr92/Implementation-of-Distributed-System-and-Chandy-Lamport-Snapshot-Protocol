@@ -10,12 +10,14 @@ public class ServerConnections implements Runnable{
 	
 	public BlockingQueue<Socket> connections;
 	public Socket socket;
+	public int source;
 	ObjectInputStream din;
 	ObjectOutputStream dout;
 	boolean shouldRun;
 	
-	public ServerConnections(BlockingQueue<Socket> connections) {
+	public ServerConnections(BlockingQueue<Socket> connections, int nodeId) {
 		this.connections = connections;
+		this.source = nodeId;
 		shouldRun = true;
 	}
 	
@@ -49,7 +51,11 @@ public class ServerConnections implements Runnable{
 					din = new ObjectInputStream(socket.getInputStream()); // Input Stream
 					AppMessage textIn = (AppMessage) din.readObject();
 					textIn.printAppMsg();
-					sendStringtoAllClients(textIn);
+					//sendStringtoAllClients(textIn);
+					if(textIn instanceof AppMessage) {
+						textIn.vector[this.source]++;
+						System.out.println(textIn.vector);
+					}
 				}
 			}	
 		} 
@@ -59,7 +65,7 @@ public class ServerConnections implements Runnable{
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		} 
 	}
