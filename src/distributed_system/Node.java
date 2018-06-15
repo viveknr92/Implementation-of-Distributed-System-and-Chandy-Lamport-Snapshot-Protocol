@@ -29,9 +29,6 @@ public class Node {
 	public void printNode() {
 		System.out.println(nodeId + "," + hostName + "," + port);
 	}
-	public void setlist() {
-	this.neighbors	= Graph.adjList.get(nodeId);
-	}
 	public ArrayList<Integer> getNeighborList() {
 		return neighbors;
 	}
