@@ -38,7 +38,7 @@ public class TCPServer{
 					e1.printStackTrace();
 				}
 				// For every client request start a new thread 
-				new ReceiveMessageThread(socket,mainObj).start();
+				new ClientThread(socket,mainObj).start();
 			}
 		}
 		finally {
