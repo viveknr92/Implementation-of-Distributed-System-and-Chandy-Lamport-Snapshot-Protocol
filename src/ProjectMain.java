@@ -152,6 +152,7 @@ public class ProjectMain implements Serializable  {
 		int numMsgs = 1;
 		int minSendDelay = 0;
 		synchronized(this){
+			//TODO change this code
 			numMsgs = this.getRandomNumber(this.minPerActive,this.maxPerActive);
 			// If random number is 0 then since node 0 is the only process active in the beginning it will not start
 			// therefore get a bigger random number
@@ -228,7 +229,6 @@ class EmitMessagesThread extends Thread{
 		try {
 			mainObj.emitMessages();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
