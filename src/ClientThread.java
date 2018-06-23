@@ -38,7 +38,7 @@ public class ClientThread extends Thread {
 					else if((mainObj.active == false) && msg instanceof ApplicationMsg && 
 							mainObj.totalMessagesSent < mainObj.maxNumber && mainObj.logging == 0){
 						mainObj.active = true; 
-						new EmitMessagesThread(mainObj).start();
+						new SendMessageThread(mainObj).start();
 					}
 					//If its an application message and logging = 1 then save it
 					else if((mainObj.active == false) && (msg instanceof ApplicationMsg) && (mainObj.logging == 1)){
