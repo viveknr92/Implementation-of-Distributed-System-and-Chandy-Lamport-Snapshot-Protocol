@@ -19,7 +19,8 @@ public class ProjectMain implements Serializable  {
 	boolean active=false;
 	int[][] adjMatrix;
 	int[] vector;
-	int[] neighbors;
+	//int[] neighbors;
+	ArrayList<Integer> neighbors = new ArrayList<>();
 	boolean blockAppMsg = false;
 	Color color = Color.BLUE;
 	int logging=0;
@@ -107,6 +108,7 @@ public class ProjectMain implements Serializable  {
 				//Socket client = new Socket(hostName,port);
 				// Put the neighbor sockets in hash map called channels indexed by their node id's
 				mainObj.channels.put(i, client);
+				mainObj.neighbors.add(i);
 				// Get an output stream associated with each socket and put it in a hashmap oStream
 				ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 				mainObj.oStream.put(i, oos);	
@@ -115,10 +117,10 @@ public class ProjectMain implements Serializable  {
 		}
 
 		//Populate neighbors array 
-		Set<Integer> keys = mainObj.channels.keySet();
-		mainObj.neighbors = new int[keys.size()];
-		int index = 0;
-		for(Integer element : keys) mainObj.neighbors[index++] = element.intValue();
+		//Set<Integer> keys = mainObj.channels.keySet();
+		//mainObj.neighbors = new int[keys.size()];
+		//int index = 0;
+		//for(Integer element : keys) mainObj.neighbors[index++] = element.intValue();
 		//mainObj.vector is used to maintain the current timestamp of the process
 		mainObj.vector = new int[mainObj.numOfNodes];
 
@@ -166,8 +168,8 @@ public class ProjectMain implements Serializable  {
 		for(int i=0;i<numMsgs;i++){
 			synchronized(this){
 				//get a random number to index in the neighbors and array and get that neighbor
-				int neighborIndex = this.getRandomNumber(0,this.neighbors.length-1);
-				int curNeighbor = this.neighbors[neighborIndex];
+				int neighborIndex = this.getRandomNumber(0,this.neighbors.size()-1);
+				int curNeighbor = this.neighbors.get(neighborIndex);
 //				System.out.println("Neighbor chosen is "+curNeighbor);
 				if(this.active == true){
 					//send application message
