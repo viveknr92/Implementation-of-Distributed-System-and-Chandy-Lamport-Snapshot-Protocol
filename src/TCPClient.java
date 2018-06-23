@@ -42,7 +42,6 @@ public class TCPClient {
 				}
 				mainObj.oStream.put(i, oos);	
 			}
-			//Put this in clientconnections.java file
 		}
 	}
 }
