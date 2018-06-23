@@ -1,12 +1,9 @@
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Set;
 
 enum Color { RED,BLUE};
@@ -19,7 +16,6 @@ public class ProjectMain implements Serializable  {
 	boolean active=false;
 	int[][] adjMatrix;
 	int[] vector;
-	//int[] neighbors;
 	ArrayList<Integer> neighbors = new ArrayList<>();
 	boolean blockAppMsg = false;
 	Color color = Color.BLUE;
@@ -73,6 +69,7 @@ public class ProjectMain implements Serializable  {
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		
 		//Read the values for all variables from the configuration file
 		ProjectMain mainObj = ConfigParser.readConfigFile(args[1]);
 		// Get the node number of the current Node
@@ -89,19 +86,12 @@ public class ProjectMain implements Serializable  {
 			mainObj.store.put(mainObj.nodes.get(i).nodeId, mainObj.nodes.get(i));
 		}
 	
-		
+		//Create a server socket and listen for clients
 		TCPServer server = new TCPServer(mainObj);
 		
 		//Create channels and keep it till the end
 		TCPClient client = new TCPClient(mainObj, curNode);
 
-		//Populate neighbors array 
-		//Set<Integer> keys = mainObj.channels.keySet();
-		//mainObj.neighbors = new int[keys.size()];
-		//int index = 0;
-		//for(Integer element : keys) mainObj.neighbors[index++] = element.intValue();
-		
-		//mainObj.vector is used to maintain the current timestamp of the process
 		mainObj.vector = new int[mainObj.numOfNodes];
 
 		//Initialize all the datastructures needed for the node to run the protocols
@@ -109,26 +99,13 @@ public class ProjectMain implements Serializable  {
 
 		//Initially node 0 is active therefore if this node is 0 then it should be active
 		if(curNode == 0){
-			mainObj.active = true;
-			////System.out.println("Emitted Messages");			
+			mainObj.active = true;		
 			//Call Chandy Lamport protocol if it is node 0
 			new ChandyLamportThread(mainObj).start();		
 			new SendMessageThread(mainObj).start();
 		}
 		
-		server.listenforinput();
-		
-//		try {
-//			while (true) {
-//				// This node listens as a Server for the clients requests 
-//				Socket socket = listener.accept();
-//				// For every client request start a new thread 
-//				new ClientThread(socket,mainObj).start();
-//			}
-//		}
-//		finally {
-//			listener.close();
-//		}
+		server.listenforinput(); //Listen for client connections
 		
 	}
 }

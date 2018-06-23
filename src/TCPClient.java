@@ -25,7 +25,6 @@ public class TCPClient {
 				try {
 					client = new Socket(address,port);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// Get the sockets for all neighbors
