@@ -90,7 +90,7 @@ public class ProjectMain implements Serializable  {
 		TCPServer server = new TCPServer(mainObj);
 		
 		//Create channels and keep it till the end
-		TCPClient client = new TCPClient(mainObj, curNode);
+		new TCPClient(mainObj, curNode);
 
 		mainObj.vector = new int[mainObj.numOfNodes];
 
