@@ -59,7 +59,7 @@ public class ChandyLamport {
 						e.printStackTrace();
 					}
 				}
-				if((mainObj.neighbors.length == 1) && (mainObj.id!=0)){
+				if((mainObj.neighbors.size() == 1) && (mainObj.id!=0)){
 					int parent = ConvergeCast.getParent(mainObj.id);	
 					mainObj.myState.channelStates = mainObj.channelStates;
 					mainObj.color = Color.BLUE;
@@ -85,13 +85,13 @@ public class ChandyLamport {
 				int i=0;
 				//Check if this node has received marker messages on all its incoming channels
 //				System.out.println("Size of the neighbors list is "+mainObj.neighbors.length);
-				while(i<mainObj.neighbors.length && mainObj.receivedMarker.get(mainObj.neighbors[i]) == true){
+				while(i<mainObj.neighbors.size() && mainObj.receivedMarker.get(mainObj.neighbors.get(i)) == true){
 					//System.out.println("Received Marker msg from neighbor "+mainObj.neighbors[i]);
 					i++;
 				}
 				// If this node has received marker messages from all its incoming channels then 
 				// send process state to Node 0
-				if(i == mainObj.neighbors.length && mainObj.id != 0){
+				if(i == mainObj.neighbors.size() && mainObj.id != 0){
 					int parent = ConvergeCast.getParent(mainObj.id);				
 //					System.out.println("For node "+mainObj.id + ", all neighbours have sent marker messages.");
 					// Record the channelState and process State and which node is sending to node 0 as nodeId
@@ -111,7 +111,7 @@ public class ChandyLamport {
 					}
 					mainObj.initialize(mainObj);
 				}
-				if(i == mainObj.neighbors.length &&  mainObj.id == 0){
+				if(i == mainObj.neighbors.size() &&  mainObj.id == 0){
 //					System.out.println("For node 0, all neighbours have sent marker messages.");
 					mainObj.myState.channelStates = mainObj.channelStates;
 					mainObj.stateMessages.put(mainObj.id, mainObj.myState);
