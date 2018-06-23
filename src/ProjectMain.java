@@ -88,11 +88,9 @@ public class ProjectMain implements Serializable  {
 		for(int i=0;i<mainObj.nodes.size();i++){
 			mainObj.store.put(mainObj.nodes.get(i).nodeId, mainObj.nodes.get(i));
 		}
-		// Get the port number on which this node should listen 
-		int serverPort = mainObj.nodes.get(mainObj.id).port;
-		// Start server on this node's assigned port
-		ServerSocket listener = new ServerSocket(serverPort);
-		Thread.sleep(10000);
+	
+		
+		TCPServer server = new TCPServer(mainObj);
 		
 		//Create channels and keep it till the end
 		TCPClient client = new TCPClient(mainObj, curNode);
@@ -117,17 +115,21 @@ public class ProjectMain implements Serializable  {
 			new ChandyLamportThread(mainObj).start();		
 			new EmitMessagesThread(mainObj).start();
 		}
-		try {
-			while (true) {
-				// This node listens as a Server for the clients requests 
-				Socket socket = listener.accept();
-				// For every client request start a new thread 
-				new ClientThread(socket,mainObj).start();
-			}
-		}
-		finally {
-			listener.close();
-		}
+		
+		server.listenforinput();
+		
+//		try {
+//			while (true) {
+//				// This node listens as a Server for the clients requests 
+//				Socket socket = listener.accept();
+//				// For every client request start a new thread 
+//				new ClientThread(socket,mainObj).start();
+//			}
+//		}
+//		finally {
+//			listener.close();
+//		}
+		
 	}
 
 
