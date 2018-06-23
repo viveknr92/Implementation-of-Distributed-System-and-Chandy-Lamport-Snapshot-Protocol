@@ -16,7 +16,6 @@ public class ChandyLamportThread extends Thread{
 			try {
 				Thread.sleep(mainObj.snapshotDelay);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
