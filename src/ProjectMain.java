@@ -96,11 +96,11 @@ public class ProjectMain implements Serializable  {
 		for(int i=0;i<mainObj.numOfNodes;i++){
 			// If the value in adjacency matrix is one for the current Node then its a neighbor
 			if(mainObj.adjMatrix[curNode][i] == 1){
-												String hostName = mainObj.store.get(i).host;
+				String hostName = mainObj.store.get(i).host;
 				//InetAddress hostName = InetAddress.getLocalHost();
 				int port = mainObj.store.get(i).port;
-												InetAddress address = InetAddress.getByName(hostName);
-												Socket client = new Socket(address,port);
+				InetAddress address = InetAddress.getByName(hostName);
+				Socket client = new Socket(address,port);
 				// Get the sockets for all neighbors
 				//Socket client = new Socket(hostName,port);
 				// Put the neighbor sockets in hash map called channels indexed by their node id's
@@ -113,6 +113,7 @@ public class ProjectMain implements Serializable  {
 
 		//Populate neighbors array 
 		Set<Integer> keys = mainObj.channels.keySet();
+		mainObj.neighbors = mainObj.channels.keySet();
 		mainObj.neighbors = new int[keys.size()];
 		int index = 0;
 		for(Integer element : keys) mainObj.neighbors[index++] = element.intValue();
