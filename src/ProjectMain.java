@@ -93,31 +93,16 @@ public class ProjectMain implements Serializable  {
 		// Start server on this node's assigned port
 		ServerSocket listener = new ServerSocket(serverPort);
 		Thread.sleep(10000);
+		
 		//Create channels and keep it till the end
-		for(int i=0;i<mainObj.numOfNodes;i++){
-			// If the value in adjacency matrix is one for the current Node then its a neighbor
-			if(mainObj.adjMatrix[curNode][i] == 1){
-				String hostName = mainObj.store.get(i).host;
-				//InetAddress hostName = InetAddress.getLocalHost();
-				int port = mainObj.store.get(i).port;
-				InetAddress address = InetAddress.getByName(hostName);
-				Socket client = new Socket(address,port);
-				// Get the sockets for all neighbors
-				//Socket client = new Socket(hostName,port);
-				// Put the neighbor sockets in hash map called channels indexed by their node id's
-				mainObj.channels.put(i, client);
-				mainObj.neighbors.add(i);
-				// Get an output stream associated with each socket and put it in a hashmap oStream
-				ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-				mainObj.oStream.put(i, oos);		
-			}
-		}
+		TCPClient client = new TCPClient(mainObj, curNode);
 
 		//Populate neighbors array 
 		//Set<Integer> keys = mainObj.channels.keySet();
 		//mainObj.neighbors = new int[keys.size()];
 		//int index = 0;
 		//for(Integer element : keys) mainObj.neighbors[index++] = element.intValue();
+		
 		//mainObj.vector is used to maintain the current timestamp of the process
 		mainObj.vector = new int[mainObj.numOfNodes];
 
