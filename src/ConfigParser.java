@@ -21,60 +21,58 @@ public class ConfigParser {
 			// Always wrap FileReader in BufferedReader.
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			while((line = bufferedReader.readLine()) != null) {
-				if(line.length() == 0)
+				if(line.length() == 0 || line.startsWith("#"))
 					continue;
 				// Ignore comments and consider only those lines which are not comments
-				if(!line.startsWith("#")){
-					if(line.contains("#")){
-						String[] input = line.split("#.*$");
-						String[] input1 = input[0].split("\\s+");
-						if(flag == 0 && input1.length == 6){
-							mySystem.numOfNodes = Integer.parseInt(input1[0]);
-							mySystem.minPerActive = Integer.parseInt(input1[1]);
-							mySystem.maxPerActive = Integer.parseInt(input1[2]);
-							mySystem.minSendDelay = Integer.parseInt(input1[3]);
-							mySystem.snapshotDelay = Integer.parseInt(input1[4]);
-							mySystem.maxNumber = Integer.parseInt(input1[5]);
-							flag++;
-							mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
-						}
-						else if(flag == 1 && count < mySystem.numOfNodes)
-						{							
-							mySystem.nodes.add(new Node(Integer.parseInt(input1[0]),input1[1],Integer.parseInt(input1[2])));
-							count++;
-							if(count == mySystem.numOfNodes){
-								flag = 2;
-							}
-						}
-						else if(flag == 2){
-							insertIntoMatrix(input1,mySystem, curNode);
-							curNode++;
+				if(line.contains("#")){
+					String[] input = line.split("#.*$");
+					String[] input1 = input[0].split("\\s+");
+					if(flag == 0 && input1.length == 6){
+						mySystem.numOfNodes = Integer.parseInt(input1[0]);
+						mySystem.minPerActive = Integer.parseInt(input1[1]);
+						mySystem.maxPerActive = Integer.parseInt(input1[2]);
+						mySystem.minSendDelay = Integer.parseInt(input1[3]);
+						mySystem.snapshotDelay = Integer.parseInt(input1[4]);
+						mySystem.maxNumber = Integer.parseInt(input1[5]);
+						flag++;
+						mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
+					}
+					else if(flag == 1 && count < mySystem.numOfNodes)
+					{							
+						mySystem.nodes.add(new Node(Integer.parseInt(input1[0]),input1[1],Integer.parseInt(input1[2])));
+						count++;
+						if(count == mySystem.numOfNodes){
+							flag = 2;
 						}
 					}
-					else {
-						String[] input = line.split("\\s+");
-						if(flag == 0 && input.length == 6){
-							mySystem.numOfNodes = Integer.parseInt(input[0]);
-							mySystem.minPerActive = Integer.parseInt(input[1]);
-							mySystem.maxPerActive = Integer.parseInt(input[2]);
-							mySystem.minSendDelay = Integer.parseInt(input[3]);
-							mySystem.snapshotDelay = Integer.parseInt(input[4]);
-							mySystem.maxNumber = Integer.parseInt(input[5]);
-							flag++;
-							mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
+					else if(flag == 2){
+						insertIntoMatrix(input1,mySystem, curNode);
+						curNode++;
+					}
+				}
+				else {
+					String[] input = line.split("\\s+");
+					if(flag == 0 && input.length == 6){
+						mySystem.numOfNodes = Integer.parseInt(input[0]);
+						mySystem.minPerActive = Integer.parseInt(input[1]);
+						mySystem.maxPerActive = Integer.parseInt(input[2]);
+						mySystem.minSendDelay = Integer.parseInt(input[3]);
+						mySystem.snapshotDelay = Integer.parseInt(input[4]);
+						mySystem.maxNumber = Integer.parseInt(input[5]);
+						flag++;
+						mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
+					}
+					else if(flag == 1 && count < mySystem.numOfNodes)
+					{
+						mySystem.nodes.add(new Node(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2])));
+						count++;
+						if(count == mySystem.numOfNodes){
+							flag = 2;
 						}
-						else if(flag == 1 && count < mySystem.numOfNodes)
-						{
-							mySystem.nodes.add(new Node(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2])));
-							count++;
-							if(count == mySystem.numOfNodes){
-								flag = 2;
-							}
-						}
-						else if(flag == 2){
-							insertIntoMatrix(input,mySystem,curNode);
-							curNode++;
-						}
+					}
+					else if(flag == 2){
+						insertIntoMatrix(input,mySystem,curNode);
+						curNode++;
 					}
 				}
 			}
@@ -104,7 +102,7 @@ public class ConfigParser {
 	}
 
 //	public static void main(String[] args) throws IOException{
-//		ProjectMain m = ConfigParser.readConfigFile("config1.txt");
+//		ProjectMain m = ConfigParser.readConfigFile("config.txt");
 //		for(int i=0;i<m.numOfNodes;i++){
 //			for(int j=0;j<m.numOfNodes;j++){
 //				System.out.print(m.adjMatrix[i][j]+"  ");
