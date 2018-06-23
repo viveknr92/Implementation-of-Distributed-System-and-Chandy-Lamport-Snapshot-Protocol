@@ -16,3 +16,6 @@
 /QNode.class
 /StateMsg.class
 /ChandyLamportThread.class
+/TCPCLient.class
+/TCPSever.class
+/TCPClient.class
