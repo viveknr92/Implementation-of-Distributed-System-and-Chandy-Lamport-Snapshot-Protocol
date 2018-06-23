@@ -24,8 +24,9 @@ public class SendMessageThread extends Thread{
 		}
 		//System.out.println("For Node "+this.id+ "  Random number of messages in range min - max per active is  "+numMsgs);
 		// channels hashMap has all neighbors as keys, store them in an array to get random neighbor
-		for(int i=0;i<numMsgs;i++){
-			synchronized(this){
+		for(int i=0;i<numMsgs;i++) {
+			synchronized(this) 
+			{
 				//get a random number to index in the neighbors and array and get that neighbor
 				int neighborIndex = this.getRandomNumber(0,mainObj.neighbors.size()-1);
 				int curNeighbor = mainObj.neighbors.get(neighborIndex);
