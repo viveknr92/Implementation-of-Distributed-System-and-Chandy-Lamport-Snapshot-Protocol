@@ -30,23 +30,23 @@ public class ReceiveThread extends Thread {
 					//If MarkerMsg send marker messages to all neighboring nodes
 					if(msg instanceof MarkerMsg){
 						int channelNo = ((MarkerMsg) msg).nodeId;
-						ChandyLamport.sendMarkerMessage(mapObject,channelNo);
+						ChandyLamport.sendMarkerMsg(mapObject,channelNo);
 					}	
 
 					//If AppMsg and node is passive becomes active only if
 					//it has sent fewer than maxNumber messages
-					else if((mapObject.active == false) && msg instanceof ApplicationMsg && 
+					else if((mapObject.active == false) && msg instanceof AppMsg && 
 							mapObject.msgSentCount < mapObject.maxNumber && mapObject.saveChannelMsg == 0){
 						mapObject.active = true; 
 						new SendMessageThread(mapObject).start();
 					}
 					
 					//If AppMsg and saveChannelMsg = 1 then save it
-					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
+					else if((mapObject.active == false) && (msg instanceof AppMsg) && (mapObject.saveChannelMsg == 1)){
 						//Save the channel No from where AppMsg was sent
-						int channelNo = ((ApplicationMsg) msg).nodeId;
+						int channelNo = ((AppMsg) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
-						ChandyLamport.logMessage(channelNo,((ApplicationMsg) msg) ,mapObject);
+						ChandyLamport.saveChannelMsgs(channelNo,((AppMsg) msg) ,mapObject);
 					}
 
 					//If StateMsg then and nodeId is 0 check for termination
@@ -58,7 +58,7 @@ public class ReceiveThread extends Thread {
 							mapObject.isRxdStateMsg[((StateMsg) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								boolean restartChandy = ChandyLamport.processStateMessages(mapObject,((StateMsg)msg));
+								boolean restartChandy = ChandyLamport.detectTermination(mapObject,((StateMsg)msg));
 								if(restartChandy){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
@@ -67,7 +67,7 @@ public class ReceiveThread extends Thread {
 							}
 						}
 						else{
-							ChandyLamport.forwardToParent(mapObject,((StateMsg)msg));
+							ChandyLamport.sendToParent(mapObject,((StateMsg)msg));
 						}
 					}
 					
@@ -76,10 +76,10 @@ public class ReceiveThread extends Thread {
 						ChandyLamport.sendFinishMsg(mapObject);
 					}
 
-					if(msg instanceof ApplicationMsg){
+					if(msg instanceof AppMsg){
 						//Implementing vector protocol on receiver side
 						for(int i=0;i<mapObject.numOfNodes;i++){
-							mapObject.vector[i] = Math.max(mapObject.vector[i], ((ApplicationMsg) msg).vector[i]);
+							mapObject.vector[i] = Math.max(mapObject.vector[i], ((AppMsg) msg).vector[i]);
 						}
 						mapObject.vector[mapObject.id]++;
 					}

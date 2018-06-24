@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public class ChandyLamport { 
   
-	public static void startSnapshotProtocol(MapProtocol mapObject) {
+	public static void beginCLProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
 			mapObject.isRxdStateMsg[mapObject.id] = true;
-			sendMarkerMessage(mapObject,mapObject.id);
+			sendMarkerMsg(mapObject,mapObject.id);
 		}
 	}
 
-	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
+	public static void sendMarkerMsg(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red and sends
 		// marker messages to all its neighboring channels , starts saveChannelMsg
 		synchronized(mapObject){
@@ -103,7 +103,7 @@ public class ChandyLamport {
 	}
 
 	// When node_0 receives state from all nodes
-	public static boolean processStateMessages(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
+	public static boolean detectTermination(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 
@@ -127,10 +127,10 @@ public class ChandyLamport {
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
 						StateMsg value = mapObject.stateMsg.get(channel);
-						for(ArrayList<ApplicationMsg> g:value.channelStates.values()){
+						for(ArrayList<AppMsg> g:value.channelStates.values()){
 							if(!g.isEmpty()){
 //								System.out.println("************** Channels are not empty "+k);
-//								for(ApplicationMsg m:g)
+//								for(AppMsg m:g)
 //									System.out.println(m.nodeId);
 								//If channels are not empty immediately return, restart CL protocol is true
 								return true;
@@ -153,7 +153,7 @@ public class ChandyLamport {
 
 	//When saveChannelMsg is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void logMessage(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
+	public static void saveChannelMsgs(int channelNo,AppMsg m, MapProtocol mapObject) {
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
@@ -161,7 +161,7 @@ public class ChandyLamport {
 			}
 			// or create a list and add the message into it
 			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
-				ArrayList<ApplicationMsg> msgs = mapObject.channelStates.get(channelNo);
+				ArrayList<AppMsg> msgs = mapObject.channelStates.get(channelNo);
 				msgs.add(m);
 				mapObject.channelStates.put(channelNo, msgs);
 			}
@@ -170,7 +170,7 @@ public class ChandyLamport {
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void forwardToParent(MapProtocol mapObject, StateMsg stateMsg) {
+	public static void sendToParent(MapProtocol mapObject, StateMsg stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
 			// Send stateMsg to the parent

@@ -10,8 +10,8 @@ public class Message implements Serializable {
 }
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
-class ApplicationMsg extends Message implements Serializable{
-	String msg = "hello";
+class AppMsg extends Message implements Serializable{
+	String msg = "app";
 	int nodeId;
 	int[] vector;
 }
@@ -28,12 +28,12 @@ class MarkerMsg extends Message implements Serializable{
 class StateMsg extends Message implements Serializable{
 	boolean active;
 	int nodeId;
-	HashMap<Integer,ArrayList<ApplicationMsg>> channelStates;
+	HashMap<Integer,ArrayList<AppMsg>> channelStates;
 	int[] vector;
 }
 
 // Send Finish messages to all nodes to when termination is detected
 @SuppressWarnings("serial")
 class FinishMsg extends Message implements Serializable{
-	String msg = "halt";
+	String msg = "finish";
 }
