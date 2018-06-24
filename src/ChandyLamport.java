@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ChandyLamport { 
     //method where protocol starts 
-	public static void startSnapshotProtocol(ProjectMain mainObj) {
+	public static void startSnapshotProtocol(MapProtocol mainObj) {
 		synchronized(mainObj){
 			// node 0 calls this method to initiate chandy and lamport protocol
 			//nodesInGraph is array which holds the status of receivedStateMessage from all the nodes in the system
@@ -15,7 +15,7 @@ public class ChandyLamport {
 		}
 	}
 
-	public static void sendMarkerMessage(ProjectMain mainObj, int channelNo){
+	public static void sendMarkerMessage(MapProtocol mainObj, int channelNo){
 		// Node which receives marker message turns red ,becomes passive and sends
 		// marker messages to all its outgoing channels , starts logging
 		synchronized(mainObj){
@@ -128,7 +128,7 @@ public class ChandyLamport {
 	}
 
 	// This method is called only by node 0 
-	public static boolean processStateMessages(ProjectMain mainObj, StateMsg msg) throws InterruptedException {
+	public static boolean processStateMessages(MapProtocol mainObj, StateMsg msg) throws InterruptedException {
 		int i=0,j=0,k=0;
 		synchronized(mainObj){
 			// Check if node 0 has received state message from all the nodes in the graph
@@ -179,7 +179,7 @@ public class ChandyLamport {
 
 	//When logging is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void logMessage(int channelNo,ApplicationMsg m, ProjectMain mainObj) {
+	public static void logMessage(int channelNo,ApplicationMsg m, MapProtocol mainObj) {
 		synchronized(mainObj){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mainObj.channelStates.get(channelNo).isEmpty()) && mainObj.receivedMarker.get(channelNo) != true){
@@ -196,7 +196,7 @@ public class ChandyLamport {
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void forwardToParent(ProjectMain mainObj, StateMsg stateMsg) {
+	public static void forwardToParent(MapProtocol mainObj, StateMsg stateMsg) {
 		synchronized(mainObj){
 			int parent = ConvergeCast.getParent(mainObj.id);
 			// Send stateMsg to the parent
@@ -210,7 +210,7 @@ public class ChandyLamport {
 	}
 
 	//Method to send finish message to all the neighbors of the current Node
-	public static void sendFinishMsg(ProjectMain mainObj) {
+	public static void sendFinishMsg(MapProtocol mainObj) {
 		synchronized(mainObj){
 			new OutputWriter(mainObj).writeToFile();
 			for(int s : mainObj.neighbors){

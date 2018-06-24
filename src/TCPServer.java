@@ -8,9 +8,9 @@ public class TCPServer{
 	// This node listens as a Server for the clients requests 
 	Socket socket = null;
 	int serverPort;
-	private ProjectMain mainObj;
+	private MapProtocol mainObj;
 	
-	public TCPServer(ProjectMain mainObj) {
+	public TCPServer(MapProtocol mainObj) {
 		
 		this.mainObj = mainObj; //Global mainObj
 		// Get the port number on which this node should listen 

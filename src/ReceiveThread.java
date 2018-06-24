@@ -5,9 +5,9 @@ import java.net.Socket;
 //Server reading objects sent by other clients in the system in a thread 
 public class ReceiveThread extends Thread {
 	Socket cSocket;
-	ProjectMain mainObj;
+	MapProtocol mainObj;
 
-	public ReceiveThread(Socket csocket,ProjectMain mainObj) {
+	public ReceiveThread(Socket csocket,MapProtocol mainObj) {
 		this.cSocket = csocket;
 		this.mainObj = mainObj;
 	}

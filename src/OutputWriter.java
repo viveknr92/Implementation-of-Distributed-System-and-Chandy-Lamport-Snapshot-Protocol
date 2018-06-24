@@ -5,15 +5,15 @@ import java.io.IOException;
 
 //Print the output to the output File
 public class OutputWriter {
-	ProjectMain mainObj;
+	MapProtocol mainObj;
 
-	public OutputWriter(ProjectMain mainObj) {
+	public OutputWriter(MapProtocol mainObj) {
 		this.mainObj = mainObj;
 	}
 
 
 	public void writeToFile() {
-		String fileName = ProjectMain.outputFileName+"-"+mainObj.id+".out";
+		String fileName = MapProtocol.outputFileName+"-"+mainObj.id+".out";
 		synchronized(mainObj.output){
 			try {
 				File file = new File(fileName);

@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 public class TCPClient {
 	
 	//Create channels and keep it till the end
-	public TCPClient(ProjectMain mainObj, int curNode) {
+	public TCPClient(MapProtocol mainObj, int curNode) {
 		for(int i=0;i<mainObj.numOfNodes;i++){
 			// If the value in adjacency matrix is one for the current Node then its a neighbor
 			//Put this in clientconnections.java file

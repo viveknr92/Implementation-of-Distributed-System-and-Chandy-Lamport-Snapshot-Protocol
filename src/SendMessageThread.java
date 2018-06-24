@@ -3,8 +3,8 @@ import java.io.ObjectOutputStream;
 import java.util.Random;
 
 public class SendMessageThread extends Thread{
-	ProjectMain mainObj;
-	public SendMessageThread(ProjectMain mainObj) {
+	MapProtocol mainObj;
+	public SendMessageThread(MapProtocol mainObj) {
 		this.mainObj = mainObj;
 	}
 	void sendMessages() throws InterruptedException{

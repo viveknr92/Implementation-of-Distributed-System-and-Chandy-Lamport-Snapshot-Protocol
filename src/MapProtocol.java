@@ -8,7 +8,7 @@ import java.util.Set;
 
 enum Color { RED,BLUE};
 @SuppressWarnings("serial")
-public class ProjectMain implements Serializable  {
+public class MapProtocol implements Serializable  {
 	static String outputFileName;
 	int id;
 	int numOfNodes,minPerActive,maxPerActive,minSendDelay,snapshotDelay,maxNumber;
@@ -47,7 +47,7 @@ public class ProjectMain implements Serializable  {
 	ArrayList<int[]> output = new ArrayList<int[]>();
 
 	//Re-initialize everything that is needed for Chandy Lamport protocol before restarting it
-	void initialize(ProjectMain mainObj){
+	void initialize(MapProtocol mainObj){
 		mainObj.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
 		mainObj.receivedMarker = new HashMap<Integer,Boolean>();
 		mainObj.stateMessages = new HashMap<Integer,StateMsg>();	
@@ -71,13 +71,13 @@ public class ProjectMain implements Serializable  {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
 		//Read the values for all variables from the configuration file
-		ProjectMain mainObj = ConfigParser.readConfigFile(args[1]);
+		MapProtocol mainObj = ConfigParser.readConfigFile(args[1]);
 		// Get the node number of the current Node
 		mainObj.id = Integer.parseInt(args[0]);
 		int curNode = mainObj.id;
 		//Get the configuration file from command line
 		mainObj.configurationFileName = args[1];
-		ProjectMain.outputFileName = mainObj.configurationFileName.substring(0, mainObj.configurationFileName.lastIndexOf('.'));
+		MapProtocol.outputFileName = mainObj.configurationFileName.substring(0, mainObj.configurationFileName.lastIndexOf('.'));
 		//Build converge cast spanning tree in the beginning
 		ConvergeCast.buildSpanningTree(mainObj.adjMatrix);
 		// Transfer the collection of nodes from ArrayList to hash map which has node id as key since  

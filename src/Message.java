@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class Message implements Serializable {
-	ProjectMain m = new ProjectMain();
+	MapProtocol m = new MapProtocol();
 	int n = m.numOfNodes;
 }
 @SuppressWarnings("serial")

@@ -2,8 +2,8 @@
 //Thread to start chandy lamport protocol
 public class ChandyLamportThread extends Thread{
 
-	ProjectMain mainObj;
-	public ChandyLamportThread(ProjectMain mainObj){
+	MapProtocol mainObj;
+	public ChandyLamportThread(MapProtocol mainObj){
 		this.mainObj = mainObj;
 	}
 	public void run(){
