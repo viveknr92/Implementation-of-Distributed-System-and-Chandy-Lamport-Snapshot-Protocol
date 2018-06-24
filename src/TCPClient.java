@@ -20,12 +20,15 @@ public class TCPClient {
 					address = InetAddress.getByName(hostName);
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
+					System.exit(1);
 				}
 				Socket client = null;
 				try {
 					client = new Socket(address,port);
 				} catch (IOException e) {
+					System.out.println("Connection Broken");
 					e.printStackTrace();
+					System.exit(1);
 				}
 				// Get the sockets for all neighbors
 				//Socket client = new Socket(hostName,port);

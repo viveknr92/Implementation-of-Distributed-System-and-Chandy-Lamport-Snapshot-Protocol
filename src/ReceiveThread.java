@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 
 //Server reading objects sent by other clients in the system in a thread 
@@ -99,12 +100,19 @@ public class ReceiveThread extends Thread {
 					}
 				}
 			}
+			catch(StreamCorruptedException e) {
+				e.printStackTrace();
+				System.exit(2);
+			}
 			catch (IOException e) {
 				e.printStackTrace();
+				System.exit(2);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				System.exit(2);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				System.exit(2);
 			}
 		}
 	}

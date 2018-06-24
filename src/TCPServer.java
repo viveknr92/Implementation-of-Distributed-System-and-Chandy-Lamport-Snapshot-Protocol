@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,8 +18,16 @@ public class TCPServer{
 		serverPort = mapObject.nodes.get(mapObject.id).port;
 		try {
 			listener = new ServerSocket(serverPort);
-		} catch (IOException e1) {
+		} 
+		catch(BindException e) {
+			e.printStackTrace();
+			System.out.println("Port not available");
+			System.exit(1);
+		}
+		catch (IOException e1) {
 			e1.printStackTrace();
+			System.out.println("Connection Broken");
+			System.exit(1);
 		}
 		
 		try {
@@ -36,6 +45,8 @@ public class TCPServer{
 					socket = listener.accept();
 				} catch (IOException e1) {
 					e1.printStackTrace();
+					System.out.println("Connection Broken");
+					System.exit(1);
 				}
 				// For every client request start a new thread 
 				new ReceiveThread(socket,mapObject).start();

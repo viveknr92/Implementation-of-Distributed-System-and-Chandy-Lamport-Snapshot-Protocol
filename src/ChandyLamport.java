@@ -221,7 +221,8 @@ public class ChandyLamport {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}			
+			}
+			System.out.println(mapObject.id + " - Write to file done");
 			System.exit(0);
 		}
 	}
