@@ -13,7 +13,7 @@ public class Main {
 		mapObject.configFileName = args[1];
 		MapProtocol.outFile = mapObject.configFileName.substring(0, mapObject.configFileName.lastIndexOf('.'));
 		//Build converge cast spanning tree
-		ConvergeCast.buildSpanningTree(mapObject.adjMtx);
+		ConvergeCast.constructNodeTree(mapObject.adjMtx);
 		// Transfer the collection of nodes from ArrayList to hash map nodes
 		for(int i=0;i<mapObject.nodes.size();i++){
 			mapObject.nodeInfo.put(mapObject.nodes.get(i).nodeId, mapObject.nodes.get(i));

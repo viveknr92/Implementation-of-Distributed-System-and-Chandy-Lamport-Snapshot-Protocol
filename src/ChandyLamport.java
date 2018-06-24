@@ -8,11 +8,11 @@ public class ChandyLamport {
 	public static void beginCLProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
 			mapObject.isRxdStateMsg[mapObject.id] = true;
-			sendMarkerMsg(mapObject,mapObject.id);
+			sendMarkerMessage(mapObject,mapObject.id);
 		}
 	}
 
-	public static void sendMarkerMsg(MapProtocol mapObject, int channelNo){
+	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red and sends
 		// marker messages to all its neighboring channels , starts saveChannelMsg
 		synchronized(mapObject){
@@ -35,7 +35,7 @@ public class ChandyLamport {
 				
 				//Send marker messages to all its neighbors
 				for(int i : mapObject.neighbors){
-					MarkerMsg m = new MarkerMsg();
+					MarkerMessage m = new MarkerMessage();
 					m.nodeId = mapObject.id;
 					ObjectOutputStream oos = mapObject.oStream.get(i);
 					try {
@@ -78,7 +78,7 @@ public class ChandyLamport {
 				// send State Msg to node_0
 				if(channel == mapObject.neighbors.size() && mapObject.id != 0){
 					int parent = ConvergeCast.getParent(mapObject.id);				
-					// Record the channelState and StateMsg and which node is sending to node 0 as nodeId
+					// Record the channelState and StateMessage and which node is sending to node 0 as nodeId
 					mapObject.curState.channelStates = mapObject.channelStates;
 					mapObject.color = Color.BLUE;
 					mapObject.saveChannelMsg = 0;
@@ -103,7 +103,7 @@ public class ChandyLamport {
 	}
 
 	// When node_0 receives state from all nodes
-	public static boolean detectTermination(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
+	public static boolean detectTermination(MapProtocol mapObject, StateMessage msg) throws InterruptedException {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 
@@ -126,11 +126,11 @@ public class ChandyLamport {
 					for(channel=0; channel < mapObject.numOfNodes; channel++){
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
-						StateMsg value = mapObject.stateMsg.get(channel);
-						for(ArrayList<AppMsg> g:value.channelStates.values()){
-							if(!g.isEmpty()){
+						StateMessage value = mapObject.stateMsg.get(channel);
+						for(ArrayList<AppMessage> cState : value.channelStates.values()){
+							if(!cState.isEmpty()){
 //								System.out.println("************** Channels are not empty "+k);
-//								for(AppMsg m:g)
+//								for(AppMessage m:g)
 //									System.out.println(m.nodeId);
 								//If channels are not empty immediately return, restart CL protocol is true
 								return true;
@@ -153,7 +153,7 @@ public class ChandyLamport {
 
 	//When saveChannelMsg is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void saveChannelMsgs(int channelNo,AppMsg m, MapProtocol mapObject) {
+	public static void saveChannelMessages(int channelNo,AppMessage m, MapProtocol mapObject) {
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
@@ -161,7 +161,7 @@ public class ChandyLamport {
 			}
 			// or create a list and add the message into it
 			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
-				ArrayList<AppMsg> msgs = mapObject.channelStates.get(channelNo);
+				ArrayList<AppMessage> msgs = mapObject.channelStates.get(channelNo);
 				msgs.add(m);
 				mapObject.channelStates.put(channelNo, msgs);
 			}
@@ -170,7 +170,7 @@ public class ChandyLamport {
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void sendToParent(MapProtocol mapObject, StateMsg stateMsg) {
+	public static void sendToParent(MapProtocol mapObject, StateMessage stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
 			// Send stateMsg to the parent
@@ -186,9 +186,9 @@ public class ChandyLamport {
 	//Method to send finish message to all the neighbors of the current Node
 	public static void sendFinishMsg(MapProtocol mapObject) {
 		synchronized(mapObject){
-			new OutputWriter(mapObject).writeToFile();
+			new OutputWriter(mapObject).storeSnapshotsToFile();
 			for(int s : mapObject.neighbors){
-				FinishMsg m = new FinishMsg();
+				FinishMessage m = new FinishMessage();
 				ObjectOutputStream oos = mapObject.oStream.get(s);
 				try {
 					oos.writeObject(m);

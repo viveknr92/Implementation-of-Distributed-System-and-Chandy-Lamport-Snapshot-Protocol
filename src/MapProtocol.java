@@ -32,15 +32,15 @@ public class MapProtocol implements Serializable  {
 	//Mapping between each sent message with object output stream
 	HashMap<Integer,ObjectOutputStream> oStream = new HashMap<Integer,ObjectOutputStream>();
 	// Mapping between ArrayList of messages for each process receiving incoming messages
-	HashMap<Integer,ArrayList<AppMsg>> channelStates;
+	HashMap<Integer,ArrayList<AppMessage>> channelStates;
 	// Mapping between incoming channels and boolean received marker message
 	HashMap<Integer,Boolean> RxdMarker;
 	// Mapping between processes and StMsg which stores all state messages
-	HashMap<Integer,StateMsg> stateMsg;	
+	HashMap<Integer,StateMessage> stateMsg;	
 	//Check if state message has been received from all the processes in the system
 	boolean[] isRxdStateMsg;
-	//State(Vector,ChannelStates and its id) of the each process in stored in this StateMsg Object
-	StateMsg curState;
+	//State(Vector,ChannelStates and its id) of the each process in stored in this StateMessage Object
+	StateMessage curState;
 	//Final output vector snapshots
 	ArrayList<int[]> globalSnapshots = new ArrayList<int[]>();
 	
@@ -61,14 +61,14 @@ public class MapProtocol implements Serializable  {
 	
 	//Initialize again before taking another snapshot
 	void initialize(MapProtocol mapObject){
-		mapObject.channelStates = new HashMap<Integer,ArrayList<AppMsg>>();
+		mapObject.channelStates = new HashMap<Integer,ArrayList<AppMessage>>();
 		mapObject.RxdMarker = new HashMap<Integer,Boolean>();
-		mapObject.stateMsg = new HashMap<Integer,StateMsg>();	
+		mapObject.stateMsg = new HashMap<Integer,StateMessage>();	
 
 		Set<Integer> keys = mapObject.channels.keySet();
 		
 		for(Integer element : keys){
-			ArrayList<AppMsg> arrList = new ArrayList<AppMsg>();
+			ArrayList<AppMessage> arrList = new ArrayList<AppMessage>();
 			mapObject.channelStates.put(element, arrList);
 		}
 		
@@ -76,7 +76,7 @@ public class MapProtocol implements Serializable  {
 			mapObject.RxdMarker.put(e,false);
 		}
 		mapObject.isRxdStateMsg = new boolean[mapObject.numOfNodes];
-		mapObject.curState = new StateMsg();
+		mapObject.curState = new StateMessage();
 		mapObject.curState.vector = new int[mapObject.numOfNodes];
 	}	
 }

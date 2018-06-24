@@ -10,7 +10,7 @@ public class ConvergeCast {
 	}
 	
 	//Function that implements bfs to build spanning tree
-	static void buildSpanningTree(int[][] adjMtx){
+	static void constructNodeTree(int[][] adjMtx){
 		boolean[] visited = new boolean[adjMtx.length];
 		parent = new int[adjMtx.length];
 		Queue<Integer> queue = new LinkedList<Integer>();

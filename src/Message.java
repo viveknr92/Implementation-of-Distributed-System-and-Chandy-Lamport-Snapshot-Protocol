@@ -10,14 +10,14 @@ public class Message implements Serializable {
 }
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
-class AppMsg extends Message implements Serializable{
-	String msg = "app";
+class AppMessage extends Message implements Serializable{
+	String msg = "Test";
 	int nodeId;
 	int[] vector;
 }
 // Sends marker string and nodeId
 @SuppressWarnings("serial")
-class MarkerMsg extends Message implements Serializable{
+class MarkerMessage extends Message implements Serializable{
 	String msg = "marker";
 	int nodeId;
 }
@@ -25,15 +25,15 @@ class MarkerMsg extends Message implements Serializable{
 // State message is sent to converge cast tree,
 // It should have the process state and all its incoming channel states 
 @SuppressWarnings("serial")
-class StateMsg extends Message implements Serializable{
+class StateMessage extends Message implements Serializable{
 	boolean active;
 	int nodeId;
-	HashMap<Integer,ArrayList<AppMsg>> channelStates;
+	HashMap<Integer,ArrayList<AppMessage>> channelStates;
 	int[] vector;
 }
 
 // Send Finish messages to all nodes to when termination is detected
 @SuppressWarnings("serial")
-class FinishMsg extends Message implements Serializable{
-	String msg = "finish";
+class FinishMessage extends Message implements Serializable{
+	String msg = "halt";
 }
