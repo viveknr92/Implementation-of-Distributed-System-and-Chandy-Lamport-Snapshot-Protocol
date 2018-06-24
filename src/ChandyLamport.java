@@ -69,6 +69,7 @@ public class ChandyLamport {
 				// Make note that marker msg was received on this channel
 				mapObject.receivedMarker.put(channelNo, true);
 				int channel=0;
+				
 				//Check if this node has received marker messages on all its incoming channels
 				while(channel<mapObject.neighbors.size() && mapObject.receivedMarker.get(mapObject.neighbors.get(channel)) == true){
 					channel++;
@@ -124,24 +125,18 @@ public class ChandyLamport {
 				if(state == mapObject.numOfNodes){
 					//Check if any channel is empty or not
 					for(channel=0; channel < mapObject.numOfNodes; channel++){
-						// If any process has non-empty channel,  then wait for snapshot 
-						// delay and restart snapshot protocol
+						//If channel id not empty restart snapshot protocol
 						StateMsg value = mapObject.stateMessages.get(channel);
 						for(ArrayList<ApplicationMsg> g:value.channelStates.values()){
 							if(!g.isEmpty()){
-//								System.out.println("************** Channels are not empty "+k);
-//								for(ApplicationMsg m:g)
-//									System.out.println(m.nodeId);
-								//If channels are not empty immediately return, restart CL protocol is true
 								return true;
 							}
 						}
 					}
 				}
-				//If the above check has passed then it means all channels are empty and all processes are 
-				//passive and now node 0 can announce termination - it can a send finish message to all its neighbors
+				
+				//If channels are empty and nodes are passive sendFinishMsg for termination
 				if(channel == mapObject.numOfNodes){
-//					System.out.println("Node 0 is sending finish message since all processes are passive and channels empty");					
 					sendFinishMsg(mapObject);
 					return false;
 				}
@@ -153,7 +148,7 @@ public class ChandyLamport {
 
 	//When logging is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void logMessage(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
+	public static void logMessage(int channelNo, ApplicationMsg m, MapProtocol mapObject) {
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.receivedMarker.get(channelNo) != true){
@@ -168,8 +163,8 @@ public class ChandyLamport {
 		}
 	}
 
-	// A process received a state msg on its channel and the process is not Node 0
-	// therefore simply forward it over converge cast tree towards Node 0
+	// For all nodes other than node_0
+	// forward StateMsg to converge cast tree towards node_0
 	public static void forwardToParent(MapProtocol mapObject, StateMsg stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
@@ -183,7 +178,7 @@ public class ChandyLamport {
 		}
 	}
 
-	//Method to send finish message to all the neighbors of the current Node
+	//Send Finish msg to all neighbouring nodes
 	public static void sendFinishMsg(MapProtocol mapObject) {
 		synchronized(mapObject){
 			new OutputWriter(mapObject).writeToFile();
