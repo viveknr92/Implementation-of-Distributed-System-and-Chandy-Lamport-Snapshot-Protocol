@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ChandyLamport { 
   
-	public static void startSnapshotProtocol(MapProtocol mapObject) {
+	public static void beginCLProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
 			mapObject.isRxdStateMsg[mapObject.id] = true;
 			sendMarkerMessage(mapObject,mapObject.id);
@@ -103,7 +103,7 @@ public class ChandyLamport {
 	}
 
 	// When node_0 receives state from all nodes
-	public static boolean processStateMessages(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
+	public static boolean detectTermination(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 

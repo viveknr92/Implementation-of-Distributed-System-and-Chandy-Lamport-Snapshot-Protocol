@@ -58,7 +58,7 @@ public class ReceiveThread extends Thread {
 							mapObject.isRxdStateMsg[((StateMsg) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								boolean restartChandy = ChandyLamport.processStateMessages(mapObject,((StateMsg)msg));
+								boolean restartChandy = ChandyLamport.detectTermination(mapObject,((StateMsg)msg));
 								if(restartChandy){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
