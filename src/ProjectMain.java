@@ -17,48 +17,46 @@ public class ProjectMain implements Serializable  {
 	int[][] adjMatrix;
 	int[] vector;
 	ArrayList<Integer> neighbors = new ArrayList<>();
-	boolean blockAppMsg = false;
 	Color color = Color.BLUE;
 	int logging=0;
 	boolean firstTime = true;
 	String configurationFileName;
-	//ArrayList which holds the nodes part of the distributed system 
+	//ArrayList which holds the total processes(nodes) 
 	ArrayList<Node> nodes = new ArrayList<Node>();
-	//HashMap which has node number as keys and <id,host,port> as value
+	//Mapping between process number as keys and <id,host,port> as value
 	HashMap<Integer,Node> store = new HashMap<Integer,Node>();
 	// Create all the channels in the beginning and keep it open till the end
-	// Mapping each connection between the nodes as a channel
+	// Mapping between each process as a server and its client connections
 	HashMap<Integer,Socket> channels = new HashMap<Integer,Socket>();
 	// Create all the output streams associated with each socket 
-	// Create a mapping between each sent message with object output stream
+	//Mapping between each sent message with object output stream
 	HashMap<Integer,ObjectOutputStream> oStream = new HashMap<Integer,ObjectOutputStream>();
-	// HashMap which stores ArrayList of messages recorded while the process is red for each channel
-	
+	// Mapping between ArrayList of messages for each process receiving incoming messages
 	HashMap<Integer,ArrayList<ApplicationMsg>> channelStates;
-	// HashMap which stores all incoming channels and boolean received marker message
+	// Mapping between incoming channels and boolean received marker message
 	HashMap<Integer,Boolean> receivedMarker;
-	// HashMap which stores all state messages
+	// Mapping between processes and StMsg which stores all state messages
 	HashMap<Integer,StateMsg> stateMessages;	
-	//Used to determine if state message has been received from all the processes in the system
+	//Check if state message has been received from all the processes in the system
 	boolean[] nodesInGraph;
-	//Every process stores its state(Vector,ChannelStates and its id) in this StateMsg Object
+	//State(Vector,ChannelStates and its id) of the each process in stored in this StateMsg Object
 	StateMsg myState;
-	//To hold output Snapshots
+	//Final output vector snapshots
 	ArrayList<int[]> output = new ArrayList<int[]>();
 
-	//Re-initialize everything that is needed for Chandy Lamport protocol before restarting it
+	//Initialize again before taking another snapshot
 	void initialize(ProjectMain mainObj){
 		mainObj.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
 		mainObj.receivedMarker = new HashMap<Integer,Boolean>();
 		mainObj.stateMessages = new HashMap<Integer,StateMsg>();	
 
 		Set<Integer> keys = mainObj.channels.keySet();
-		//Initialize channelStates hashMap
+	
 		for(Integer element : keys){
 			ArrayList<ApplicationMsg> arrList = new ArrayList<ApplicationMsg>();
 			mainObj.channelStates.put(element, arrList);
 		}
-		//Initialize boolean hashmap receivedMarker to false
+	
 		for(Integer e: mainObj.neighbors){
 			mainObj.receivedMarker.put(e,false);
 		}
@@ -70,7 +68,7 @@ public class ProjectMain implements Serializable  {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
-		//Read the values for all variables from the configuration file
+		//Parse through config.txt file to get parameters
 		ProjectMain mainObj = ConfigParser.readConfigFile(args[1]);
 		// Get the node number of the current Node
 		mainObj.id = Integer.parseInt(args[0]);
@@ -78,21 +76,19 @@ public class ProjectMain implements Serializable  {
 		//Get the configuration file from command line
 		mainObj.configurationFileName = args[1];
 		ProjectMain.outputFileName = mainObj.configurationFileName.substring(0, mainObj.configurationFileName.lastIndexOf('.'));
-		//Build converge cast spanning tree in the beginning
+		//Build converge cast spanning tree
 		ConvergeCast.buildSpanningTree(mainObj.adjMatrix);
-		// Transfer the collection of nodes from ArrayList to hash map which has node id as key since  
-		// we need to get and node as value ,it returns <id,host,port> when queried with node Id.
+		// Transfer the collection of nodes from ArrayList to hash map nodes
 		for(int i=0;i<mainObj.nodes.size();i++){
 			mainObj.store.put(mainObj.nodes.get(i).nodeId, mainObj.nodes.get(i));
 		}
-	
+
+		mainObj.vector = new int[mainObj.numOfNodes];
 		//Create a server socket and listen for clients
 		TCPServer server = new TCPServer(mainObj);
 		
 		//Create channels and keep it till the end
 		TCPClient client = new TCPClient(mainObj, curNode);
-
-		mainObj.vector = new int[mainObj.numOfNodes];
 
 		//Initialize all the datastructures needed for the node to run the protocols
 		mainObj.initialize(mainObj);
