@@ -127,10 +127,10 @@ public class ChandyLamport {
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
 						StateMsg value = mapObject.stateMsg.get(channel);
-						for(ArrayList<AppMsg> g:value.channelStates.values()){
+						for(ArrayList<ApplicationMsg> g:value.channelStates.values()){
 							if(!g.isEmpty()){
 //								System.out.println("************** Channels are not empty "+k);
-//								for(AppMsg m:g)
+//								for(ApplicationMsg m:g)
 //									System.out.println(m.nodeId);
 								//If channels are not empty immediately return, restart CL protocol is true
 								return true;
@@ -153,7 +153,7 @@ public class ChandyLamport {
 
 	//When saveChannelMsg is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void saveChannelMsgs(int channelNo,AppMsg m, MapProtocol mapObject) {
+	public static void saveChannelMsgs(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
@@ -161,7 +161,7 @@ public class ChandyLamport {
 			}
 			// or create a list and add the message into it
 			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
-				ArrayList<AppMsg> msgs = mapObject.channelStates.get(channelNo);
+				ArrayList<ApplicationMsg> msgs = mapObject.channelStates.get(channelNo);
 				msgs.add(m);
 				mapObject.channelStates.put(channelNo, msgs);
 			}
