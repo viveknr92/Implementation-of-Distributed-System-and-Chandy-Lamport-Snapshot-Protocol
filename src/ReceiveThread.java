@@ -36,16 +36,16 @@ public class ReceiveThread extends Thread {
 					//If AppMsg and node is passive becomes active only if
 					//it has sent fewer than maxNumber messages
 					else if((mapObject.active == false) && msg instanceof ApplicationMsg && 
-							mapObject.totalMessagesSent < mapObject.maxNumber && mapObject.logging == 0){
+							mapObject.msgSentCount < mapObject.maxNumber && mapObject.saveChannelMsg == 0){
 						mapObject.active = true; 
 						new SendMessageThread(mapObject).start();
 					}
 					
-					//If AppMsg and logging = 1 then save it
-					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.logging == 1)){
+					//If AppMsg and saveChannelMsg = 1 then save it
+					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
 						//Save the channel No from where AppMsg was sent
 						int channelNo = ((ApplicationMsg) msg).nodeId;
-						//Log the application message since logging is enabled
+						//Log the application message since saveChannelMsg is enabled
 						ChandyLamport.logMessage(channelNo,((ApplicationMsg) msg) ,mapObject);
 					}
 
@@ -54,9 +54,9 @@ public class ReceiveThread extends Thread {
 					else if(msg instanceof StateMsg){
 						if(mapObject.id == 0){
 							//Message received at node_0 from nodeId
-							mapObject.stateMessages.put(((StateMsg)msg).nodeId,((StateMsg)msg));
-							mapObject.nodesInGraph[((StateMsg) msg).nodeId] = true;
-							if(mapObject.stateMessages.size() == mapObject.numOfNodes){
+							mapObject.stateMsg.put(((StateMsg)msg).nodeId,((StateMsg)msg));
+							mapObject.isRxdStateMsg[((StateMsg) msg).nodeId] = true;
+							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
 								boolean restartChandy = ChandyLamport.processStateMessages(mapObject,((StateMsg)msg));
 								if(restartChandy){

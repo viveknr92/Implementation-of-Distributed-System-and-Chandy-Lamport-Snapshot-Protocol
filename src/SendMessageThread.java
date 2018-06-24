@@ -45,8 +45,8 @@ public class SendMessageThread extends Thread{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}	
-					//increment totalMessagesSent
-					mapObject.totalMessagesSent++;
+					//increment msgSentCount
+					mapObject.msgSentCount++;
 				}
 			}
 			// Wait for minimum sending delay before sending another message

@@ -8,8 +8,8 @@ public class ChandyLamportThread extends Thread{
 	}
 	public void run(){
 		//If its the first time calling chandy Lamport protocol, start immediately
-		if(mapObject.firstTime){
-			mapObject.firstTime = false;
+		if(mapObject.isFirstSnapshot){
+			mapObject.isFirstSnapshot = false;
 		}
 		//If its not first time , start after the snapShot delay
 		else{

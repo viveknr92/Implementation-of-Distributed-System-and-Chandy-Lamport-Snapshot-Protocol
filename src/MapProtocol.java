@@ -8,23 +8,23 @@ import java.util.Set;
 enum Color { RED,BLUE};
 @SuppressWarnings("serial")
 public class MapProtocol implements Serializable  {
-	static String outputFileName;
 	int id;
-	int numOfNodes,minPerActive,maxPerActive,minSendDelay,snapshotDelay,maxNumber;
-	int totalMessagesSent;
+	int[][] adjMtx;
+	int msgSentCount;
+	boolean isFirstSnapshot;
 	boolean active;
-	int[][] adjMatrix;
+	static String outFile;
 	int[] vector;
+	int saveChannelMsg;
+	int numOfNodes,minPerActive,maxPerActive,minSendDelay,snapshotDelay,maxNumber;
 	ArrayList<Integer> neighbors;
 	Color color;
-	int logging;
-	boolean firstTime;
 	
-	String configurationFileName;
+	String configFileName;
 	//ArrayList which holds the total processes(nodes) 
 	ArrayList<Node> nodes = new ArrayList<Node>();
 	//Mapping between process number as keys and <id,host,port> as value
-	HashMap<Integer,Node> store = new HashMap<Integer,Node>();
+	HashMap<Integer,Node> nodeInfo = new HashMap<Integer,Node>();
 	// Create all the channels in the beginning and keep it open till the end
 	// Mapping between each process as a server and its client connections
 	HashMap<Integer,Socket> channels = new HashMap<Integer,Socket>();
@@ -34,36 +34,36 @@ public class MapProtocol implements Serializable  {
 	// Mapping between ArrayList of messages for each process receiving incoming messages
 	HashMap<Integer,ArrayList<ApplicationMsg>> channelStates;
 	// Mapping between incoming channels and boolean received marker message
-	HashMap<Integer,Boolean> receivedMarker;
+	HashMap<Integer,Boolean> RxdMarker;
 	// Mapping between processes and StMsg which stores all state messages
-	HashMap<Integer,StateMsg> stateMessages;	
+	HashMap<Integer,StateMsg> stateMsg;	
 	//Check if state message has been received from all the processes in the system
-	boolean[] nodesInGraph;
+	boolean[] isRxdStateMsg;
 	//State(Vector,ChannelStates and its id) of the each process in stored in this StateMsg Object
-	StateMsg myState;
+	StateMsg curState;
 	//Final output vector snapshots
-	ArrayList<int[]> output = new ArrayList<int[]>();
+	ArrayList<int[]> globalSnapshots = new ArrayList<int[]>();
 	
 	//Constructor to initialize all variables
 	public MapProtocol() {
-		totalMessagesSent = 0;
+		msgSentCount = 0;
 		active=false;
 		neighbors = new ArrayList<>();
 		color = Color.BLUE;
-		logging=0;
-		firstTime = true;
+		saveChannelMsg=0;
+		isFirstSnapshot = true;
 		nodes = new ArrayList<Node>();
-		store = new HashMap<Integer,Node>();
+		nodeInfo = new HashMap<Integer,Node>();
 		channels = new HashMap<Integer,Socket>();
 		oStream = new HashMap<Integer,ObjectOutputStream>();
-		output = new ArrayList<int[]>();
+		globalSnapshots = new ArrayList<int[]>();
 	}
 	
 	//Initialize again before taking another snapshot
 	void initialize(MapProtocol mapObject){
 		mapObject.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
-		mapObject.receivedMarker = new HashMap<Integer,Boolean>();
-		mapObject.stateMessages = new HashMap<Integer,StateMsg>();	
+		mapObject.RxdMarker = new HashMap<Integer,Boolean>();
+		mapObject.stateMsg = new HashMap<Integer,StateMsg>();	
 
 		Set<Integer> keys = mapObject.channels.keySet();
 		
@@ -73,10 +73,10 @@ public class MapProtocol implements Serializable  {
 		}
 		
 		for(Integer e: mapObject.neighbors){
-			mapObject.receivedMarker.put(e,false);
+			mapObject.RxdMarker.put(e,false);
 		}
-		mapObject.nodesInGraph = new boolean[mapObject.numOfNodes];
-		mapObject.myState = new StateMsg();
-		mapObject.myState.vector = new int[mapObject.numOfNodes];
+		mapObject.isRxdStateMsg = new boolean[mapObject.numOfNodes];
+		mapObject.curState = new StateMsg();
+		mapObject.curState.vector = new int[mapObject.numOfNodes];
 	}	
 }

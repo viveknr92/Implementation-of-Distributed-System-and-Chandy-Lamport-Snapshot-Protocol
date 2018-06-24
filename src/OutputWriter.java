@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-//Print the output to the output File
+//Print the globalSnapshots to the output File
 public class OutputWriter {
 	MapProtocol mapObject;
 
@@ -13,8 +13,8 @@ public class OutputWriter {
 
 
 	public void writeToFile() {
-		String fileName = MapProtocol.outputFileName+"-"+mapObject.id+".out";
-		synchronized(mapObject.output){
+		String fileName = MapProtocol.outFile+"-"+mapObject.id+".out";
+		synchronized(mapObject.globalSnapshots){
 			try {
 				File file = new File(fileName);
 				FileWriter fileWriter;
@@ -30,16 +30,16 @@ public class OutputWriter {
                 bufferedWriter.write("\n");
             }*/
    
-				for(int i=0;i<mapObject.output.size();i++){
-					for(int j:mapObject.output.get(i)){
+				for(int i=0;i<mapObject.globalSnapshots.size();i++){
+					for(int j:mapObject.globalSnapshots.get(i)){
 						bufferedWriter.write(j+" ");
 						
 					}
-					if(i<(mapObject.output.size()-1)){
+					if(i<(mapObject.globalSnapshots.size()-1)){
 	            bufferedWriter.write("\n");
 					}
 				}			
-				mapObject.output.clear();
+				mapObject.globalSnapshots.clear();
 				// Always close files.
 				bufferedWriter.close();
 			}
