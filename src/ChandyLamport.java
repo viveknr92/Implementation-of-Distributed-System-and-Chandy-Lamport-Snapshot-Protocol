@@ -5,51 +5,51 @@ import java.util.ArrayList;
 
 public class ChandyLamport { 
     //method where protocol starts 
-	public static void startSnapshotProtocol(ProjectMain mainObj) {
-		synchronized(mainObj){
+	public static void startSnapshotProtocol(MapProtocol mapObject) {
+		synchronized(mapObject){
 			// node 0 calls this method to initiate chandy and lamport protocol
 			//nodesInGraph is array which holds the status of receivedStateMessage from all the nodes in the system
-			mainObj.nodesInGraph[mainObj.id] = true;
+			mapObject.nodesInGraph[mapObject.id] = true;
 			//It turns red and sends marker messages to all its outgoing channels
-			sendMarkerMessage(mainObj,mainObj.id);
+			sendMarkerMessage(mapObject,mapObject.id);
 		}
 	}
 
-	public static void sendMarkerMessage(ProjectMain mainObj, int channelNo){
+	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red ,becomes passive and sends
 		// marker messages to all its outgoing channels , starts logging
-		synchronized(mainObj){
-			if(mainObj.color == Color.BLUE){
+		synchronized(mapObject){
+			if(mapObject.color == Color.BLUE){
 //				System.out.println("Received first Marker message from node and color is blue, "
 //						+ "will be changed to red  "+channelNo);
-				mainObj.receivedMarker.put(channelNo, true);
-				mainObj.color = Color.RED;
-				mainObj.myState.active = mainObj.active;
-				mainObj.myState.vector = mainObj.vector;
-				mainObj.myState.nodeId = mainObj.id;
-//				System.out.println("Node "+mainObj.id+" is sending the following timestamp to Node 0");
-//				for(ArrayList<ApplicationMsg> a:mainObj.channelStates.values()){
-//					System.out.println("******Checking if mainObj has empty channel state:"+a.isEmpty());
+				mapObject.receivedMarker.put(channelNo, true);
+				mapObject.color = Color.RED;
+				mapObject.myState.active = mapObject.active;
+				mapObject.myState.vector = mapObject.vector;
+				mapObject.myState.nodeId = mapObject.id;
+//				System.out.println("Node "+mapObject.id+" is sending the following timestamp to Node 0");
+//				for(ArrayList<ApplicationMsg> a:mapObject.channelStates.values()){
+//					System.out.println("******Checking if mapObject has empty channel state:"+a.isEmpty());
 //				}
-//				for(int k:mainObj.myState.vector){
+//				for(int k:mapObject.myState.vector){
 //					System.out.print(k+" ");
 //				}
-				int[] vectorCopy = new int[mainObj.myState.vector.length];
+				int[] vectorCopy = new int[mapObject.myState.vector.length];
 				for(int i=0;i<vectorCopy.length;i++){
-					vectorCopy[i] = mainObj.myState.vector[i];  //Local Snapshot
+					vectorCopy[i] = mapObject.myState.vector[i];  //Local Snapshot
 				}
-//				synchronized(mainObj.output){
-				mainObj.output.add(vectorCopy);
+//				synchronized(mapObject.output){
+				mapObject.output.add(vectorCopy);
 //				}
-//				new writeToOutputThread(mainObj).start();
+//				new writeToOutputThread(mapObject).start();
 				//logging = 1 demands the process to log application messages after it has become red
-				mainObj.logging = 1;
+				mapObject.logging = 1;
 				//Send marker messages to all its neighbors
-				for(int i : mainObj.neighbors){
+				for(int i : mapObject.neighbors){
 					MarkerMsg m = new MarkerMsg();
-//					System.out.println("To Node "+i+" process "+mainObj.id+"  is sending marker messages now");
-					m.nodeId = mainObj.id;
-					ObjectOutputStream oos = mainObj.oStream.get(i);
+//					System.out.println("To Node "+i+" process "+mapObject.id+"  is sending marker messages now");
+					m.nodeId = mapObject.id;
+					ObjectOutputStream oos = mapObject.oStream.get(i);
 					try {
 						oos.writeObject(m);
 					} catch (IOException e) {
@@ -59,66 +59,66 @@ public class ChandyLamport {
 				
 				
 				//Edge case when only two nodes are there
-				if((mainObj.neighbors.size() == 1) && (mainObj.id!=0)){
-					int parent = ConvergeCast.getParent(mainObj.id);	
-					mainObj.myState.channelStates = mainObj.channelStates;
-					mainObj.color = Color.BLUE;
-					mainObj.logging = 0;
+				if((mapObject.neighbors.size() == 1) && (mapObject.id!=0)){
+					int parent = ConvergeCast.getParent(mapObject.id);	
+					mapObject.myState.channelStates = mapObject.channelStates;
+					mapObject.color = Color.BLUE;
+					mapObject.logging = 0;
 					// Send channel state to parent 
-					ObjectOutputStream oos = mainObj.oStream.get(parent);
+					ObjectOutputStream oos = mapObject.oStream.get(parent);
 					try {
-						oos.writeObject(mainObj.myState);
+						oos.writeObject(mapObject.myState);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					mainObj.initialize(mainObj);
+					mapObject.initialize(mapObject);
 				}
 
 
 			}
 			//If color of the process is red and a marker message is received on this channel
-			else if(mainObj.color == Color.RED){
-//				System.out.println("Received a marker message when the color of process "+mainObj.id+" is red");
+			else if(mapObject.color == Color.RED){
+//				System.out.println("Received a marker message when the color of process "+mapObject.id+" is red");
 				// Record that on this channel a marker message was received
-				mainObj.receivedMarker.put(channelNo, true);
+				mapObject.receivedMarker.put(channelNo, true);
 				int i=0;
 				//Check if this node has received marker messages on all its incoming channels
-//				System.out.println("Size of the neighbors list is "+mainObj.neighbors.length);
-				while(i<mainObj.neighbors.size() && mainObj.receivedMarker.get(mainObj.neighbors.get(i)) == true){
-					//System.out.println("Received Marker msg from neighbor "+mainObj.neighbors[i]);
+//				System.out.println("Size of the neighbors list is "+mapObject.neighbors.length);
+				while(i<mapObject.neighbors.size() && mapObject.receivedMarker.get(mapObject.neighbors.get(i)) == true){
+					//System.out.println("Received Marker msg from neighbor "+mapObject.neighbors[i]);
 					i++;
 				}
 				// If this node has received marker messages from all its incoming channels then 
 				// send process state to Node 0
-				if(i == mainObj.neighbors.size() && mainObj.id != 0){
-					int parent = ConvergeCast.getParent(mainObj.id);				
-//					System.out.println("For node "+mainObj.id + ", all neighbours have sent marker messages.");
+				if(i == mapObject.neighbors.size() && mapObject.id != 0){
+					int parent = ConvergeCast.getParent(mapObject.id);				
+//					System.out.println("For node "+mapObject.id + ", all neighbours have sent marker messages.");
 					// Record the channelState and process State and which node is sending to node 0 as nodeId
-					mainObj.myState.channelStates = mainObj.channelStates;
-//					for(ArrayList<ApplicationMsg> a:mainObj.channelStates.values()){
-//						System.out.println("Checking if mainObj has empty channel state:"+a.isEmpty());
+					mapObject.myState.channelStates = mapObject.channelStates;
+//					for(ArrayList<ApplicationMsg> a:mapObject.channelStates.values()){
+//						System.out.println("Checking if mapObject has empty channel state:"+a.isEmpty());
 //					}
-					mainObj.color = Color.BLUE;
-					mainObj.logging = 0;
+					mapObject.color = Color.BLUE;
+					mapObject.logging = 0;
 					// Send channel state to parent 
-					ObjectOutputStream oos = mainObj.oStream.get(parent);
-//					System.out.println("Sending State Msg  by  "+mainObj.id+" and process state is  "+mainObj.myState.active);
+					ObjectOutputStream oos = mapObject.oStream.get(parent);
+//					System.out.println("Sending State Msg  by  "+mapObject.id+" and process state is  "+mapObject.myState.active);
 					try {
-						oos.writeObject(mainObj.myState);
+						oos.writeObject(mapObject.myState);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					mainObj.initialize(mainObj);
+					mapObject.initialize(mapObject);
 				}
-				if(i == mainObj.neighbors.size() &&  mainObj.id == 0){
+				if(i == mapObject.neighbors.size() &&  mapObject.id == 0){
 //					System.out.println("For node 0, all neighbours have sent marker messages.");
-					mainObj.myState.channelStates = mainObj.channelStates;
-					mainObj.stateMessages.put(mainObj.id, mainObj.myState);
-					mainObj.color = Color.BLUE;
-					mainObj.logging = 0;
+					mapObject.myState.channelStates = mapObject.channelStates;
+					mapObject.stateMessages.put(mapObject.id, mapObject.myState);
+					mapObject.color = Color.BLUE;
+					mapObject.logging = 0;
 				}
-//				if(i != mainObj.neighbors.length){
-//					System.out.println("For node "+mainObj.id + ", neighbor " + mainObj.neighbors[i] 
+//				if(i != mapObject.neighbors.length){
+//					System.out.println("For node "+mapObject.id + ", neighbor " + mapObject.neighbors[i] 
 //							+" has not yet sent a marker message.");
 //				}
 //				
@@ -128,31 +128,31 @@ public class ChandyLamport {
 	}
 
 	// This method is called only by node 0 
-	public static boolean processStateMessages(ProjectMain mainObj, StateMsg msg) throws InterruptedException {
+	public static boolean processStateMessages(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
 		int i=0,j=0,k=0;
-		synchronized(mainObj){
+		synchronized(mapObject){
 			// Check if node 0 has received state message from all the nodes in the graph
-			while(i<mainObj.nodesInGraph.length && mainObj.nodesInGraph[i] == true){
+			while(i<mapObject.nodesInGraph.length && mapObject.nodesInGraph[i] == true){
 				i++;
 			}
 			//If it has received all the state messages 
-			if(i == mainObj.nodesInGraph.length){
+			if(i == mapObject.nodesInGraph.length){
 				//Go through each state message
-				for(j=0;j<mainObj.stateMessages.size();j++){
+				for(j=0;j<mapObject.stateMessages.size();j++){
 					// Check if any process is still active , if so then no further check required 
 					//wait for snapshot delay and restart snapshot protocol
-					if(mainObj.stateMessages.get(j).active == true){
+					if(mapObject.stateMessages.get(j).active == true){
 //						System.out.println(" *****************Process is still active ");
 						return true;
 					}
 				}
 				//If all processes are passive then j is now equal to numOfNodes 
-				if(j == mainObj.numOfNodes){
+				if(j == mapObject.numOfNodes){
 					//now check for channels 
-					for(k=0;k<mainObj.numOfNodes;k++){
+					for(k=0;k<mapObject.numOfNodes;k++){
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
-						StateMsg value = mainObj.stateMessages.get(k);
+						StateMsg value = mapObject.stateMessages.get(k);
 						for(ArrayList<ApplicationMsg> g:value.channelStates.values()){
 							if(!g.isEmpty()){
 //								System.out.println("************** Channels are not empty "+k);
@@ -166,9 +166,9 @@ public class ChandyLamport {
 				}
 				//If the above check has passed then it means all channels are empty and all processes are 
 				//passive and now node 0 can announce termination - it can a send finish message to all its neighbors
-				if(k == mainObj.numOfNodes){
+				if(k == mapObject.numOfNodes){
 //					System.out.println("Node 0 is sending finish message since all processes are passive and channels empty");					
-					sendFinishMsg(mainObj);
+					sendFinishMsg(mapObject);
 					return false;
 				}
 			}
@@ -179,28 +179,28 @@ public class ChandyLamport {
 
 	//When logging is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void logMessage(int channelNo,ApplicationMsg m, ProjectMain mainObj) {
-		synchronized(mainObj){
+	public static void logMessage(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
+		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
-			if(!(mainObj.channelStates.get(channelNo).isEmpty()) && mainObj.receivedMarker.get(channelNo) != true){
-				mainObj.channelStates.get(channelNo).add(m);
+			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.receivedMarker.get(channelNo) != true){
+				mapObject.channelStates.get(channelNo).add(m);
 			}
 			// or create a list and add the message into it
-			else if((mainObj.channelStates.get(channelNo).isEmpty()) && mainObj.receivedMarker.get(channelNo) != true){
-				ArrayList<ApplicationMsg> msgs = mainObj.channelStates.get(channelNo);
+			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.receivedMarker.get(channelNo) != true){
+				ArrayList<ApplicationMsg> msgs = mapObject.channelStates.get(channelNo);
 				msgs.add(m);
-				mainObj.channelStates.put(channelNo, msgs);
+				mapObject.channelStates.put(channelNo, msgs);
 			}
 		}
 	}
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void forwardToParent(ProjectMain mainObj, StateMsg stateMsg) {
-		synchronized(mainObj){
-			int parent = ConvergeCast.getParent(mainObj.id);
+	public static void forwardToParent(MapProtocol mapObject, StateMsg stateMsg) {
+		synchronized(mapObject){
+			int parent = ConvergeCast.getParent(mapObject.id);
 			// Send stateMsg to the parent
-			ObjectOutputStream oos = mainObj.oStream.get(parent);
+			ObjectOutputStream oos = mapObject.oStream.get(parent);
 			try {
 				oos.writeObject(stateMsg);
 			} catch (IOException e) {
@@ -210,12 +210,12 @@ public class ChandyLamport {
 	}
 
 	//Method to send finish message to all the neighbors of the current Node
-	public static void sendFinishMsg(ProjectMain mainObj) {
-		synchronized(mainObj){
-			new OutputWriter(mainObj).writeToFile();
-			for(int s : mainObj.neighbors){
+	public static void sendFinishMsg(MapProtocol mapObject) {
+		synchronized(mapObject){
+			new OutputWriter(mapObject).writeToFile();
+			for(int s : mapObject.neighbors){
 				FinishMsg m = new FinishMsg();
-				ObjectOutputStream oos = mainObj.oStream.get(s);
+				ObjectOutputStream oos = mapObject.oStream.get(s);
 				try {
 					oos.writeObject(m);
 				} catch (IOException e) {

@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class ConfigParser {
 
-	public static ProjectMain readConfigFile(String name) throws IOException{
-		ProjectMain mySystem = new ProjectMain();
+	public static MapProtocol readConfigFile(String name) throws IOException{
+		MapProtocol mySystem = new MapProtocol();
 		int count = 0,flag = 0;
 		// Variable to keep track of the current node whose neighbors are being updated
 		int curNode = 0;
@@ -95,7 +95,7 @@ public class ConfigParser {
 		return mySystem;
 	}
 
-	static void insertIntoMatrix(String[] input, ProjectMain mySystem,int curNode) {
+	static void insertIntoMatrix(String[] input, MapProtocol mySystem,int curNode) {
 		for(String i:input){
 			mySystem.adjMatrix[curNode][Integer.parseInt(i)] = 1;
 		}

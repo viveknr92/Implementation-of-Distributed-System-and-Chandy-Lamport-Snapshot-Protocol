@@ -5,16 +5,16 @@ import java.io.IOException;
 
 //Print the output to the output File
 public class OutputWriter {
-	ProjectMain mainObj;
+	MapProtocol mapObject;
 
-	public OutputWriter(ProjectMain mainObj) {
-		this.mainObj = mainObj;
+	public OutputWriter(MapProtocol mapObject) {
+		this.mapObject = mapObject;
 	}
 
 
 	public void writeToFile() {
-		String fileName = ProjectMain.outputFileName+"-"+mainObj.id+".out";
-		synchronized(mainObj.output){
+		String fileName = MapProtocol.outputFileName+"-"+mapObject.id+".out";
+		synchronized(mapObject.output){
 			try {
 				File file = new File(fileName);
 				FileWriter fileWriter;
@@ -30,16 +30,16 @@ public class OutputWriter {
                 bufferedWriter.write("\n");
             }*/
    
-				for(int i=0;i<mainObj.output.size();i++){
-					for(int j:mainObj.output.get(i)){
+				for(int i=0;i<mapObject.output.size();i++){
+					for(int j:mapObject.output.get(i)){
 						bufferedWriter.write(j+" ");
 						
 					}
-					if(i<(mainObj.output.size()-1)){
+					if(i<(mapObject.output.size()-1)){
 	            bufferedWriter.write("\n");
 					}
 				}			
-				mainObj.output.clear();
+				mapObject.output.clear();
 				// Always close files.
 				bufferedWriter.close();
 			}

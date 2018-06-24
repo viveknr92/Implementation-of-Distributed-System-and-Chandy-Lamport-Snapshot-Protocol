@@ -2,24 +2,24 @@
 //Thread to start chandy lamport protocol
 public class ChandyLamportThread extends Thread{
 
-	ProjectMain mainObj;
-	public ChandyLamportThread(ProjectMain mainObj){
-		this.mainObj = mainObj;
+	MapProtocol mapObject;
+	public ChandyLamportThread(MapProtocol mapObject){
+		this.mapObject = mapObject;
 	}
 	public void run(){
 		//If its the first time calling chandy Lamport protocol, start immediately
-		if(mainObj.firstTime){
-			mainObj.firstTime = false;
+		if(mapObject.firstTime){
+			mapObject.firstTime = false;
 		}
 		//If its not first time , start after the snapShot delay
 		else{
 			try {
-				Thread.sleep(mainObj.snapshotDelay);
+				Thread.sleep(mapObject.snapshotDelay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		//Irrespective of first or second time we start the protocol if this thread is started
-		ChandyLamport.startSnapshotProtocol(mainObj);
+		ChandyLamport.startSnapshotProtocol(mapObject);
 	}
 }
