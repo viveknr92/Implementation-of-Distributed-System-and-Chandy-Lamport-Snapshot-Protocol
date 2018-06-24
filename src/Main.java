@@ -10,13 +10,13 @@ public class Main {
 		mapObject.id = Integer.parseInt(args[0]);
 		int curNode = mapObject.id;
 		//Get the configuration file name from command line
-		mapObject.configurationFileName = args[1];
-		MapProtocol.outputFileName = mapObject.configurationFileName.substring(0, mapObject.configurationFileName.lastIndexOf('.'));
+		mapObject.configFileName = args[1];
+		MapProtocol.outFile = mapObject.configFileName.substring(0, mapObject.configFileName.lastIndexOf('.'));
 		//Build converge cast spanning tree
-		ConvergeCast.buildSpanningTree(mapObject.adjMatrix);
+		ConvergeCast.buildSpanningTree(mapObject.adjMtx);
 		// Transfer the collection of nodes from ArrayList to hash map nodes
 		for(int i=0;i<mapObject.nodes.size();i++){
-			mapObject.store.put(mapObject.nodes.get(i).nodeId, mapObject.nodes.get(i));
+			mapObject.nodeInfo.put(mapObject.nodes.get(i).nodeId, mapObject.nodes.get(i));
 		}
 	
 		//Create a server socket and listen for clients
