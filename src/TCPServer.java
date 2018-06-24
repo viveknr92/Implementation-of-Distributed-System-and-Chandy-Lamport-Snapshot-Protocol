@@ -8,13 +8,13 @@ public class TCPServer{
 	// This node listens as a Server for the clients requests 
 	Socket socket = null;
 	int serverPort;
-	private MapProtocol mainObj;
+	private MapProtocol mapObject;
 	
-	public TCPServer(MapProtocol mainObj) {
+	public TCPServer(MapProtocol mapObject) {
 		
-		this.mainObj = mainObj; //Global mainObj
+		this.mapObject = mapObject; //Global mapObject
 		// Get the port number on which this node should listen 
-		serverPort = mainObj.nodes.get(mainObj.id).port;
+		serverPort = mapObject.nodes.get(mapObject.id).port;
 		try {
 			listener = new ServerSocket(serverPort);
 		} catch (IOException e1) {
@@ -38,7 +38,7 @@ public class TCPServer{
 					e1.printStackTrace();
 				}
 				// For every client request start a new thread 
-				new ReceiveThread(socket,mainObj).start();
+				new ReceiveThread(socket,mapObject).start();
 			}
 		}
 		finally {

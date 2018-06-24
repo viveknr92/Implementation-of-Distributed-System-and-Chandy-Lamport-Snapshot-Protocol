@@ -47,62 +47,62 @@ public class MapProtocol implements Serializable  {
 	ArrayList<int[]> output = new ArrayList<int[]>();
 
 	//Re-initialize everything that is needed for Chandy Lamport protocol before restarting it
-	void initialize(MapProtocol mainObj){
-		mainObj.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
-		mainObj.receivedMarker = new HashMap<Integer,Boolean>();
-		mainObj.stateMessages = new HashMap<Integer,StateMsg>();	
+	void initialize(MapProtocol mapObject){
+		mapObject.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
+		mapObject.receivedMarker = new HashMap<Integer,Boolean>();
+		mapObject.stateMessages = new HashMap<Integer,StateMsg>();	
 
-		Set<Integer> keys = mainObj.channels.keySet();
+		Set<Integer> keys = mapObject.channels.keySet();
 		//Initialize channelStates hashMap
 		for(Integer element : keys){
 			ArrayList<ApplicationMsg> arrList = new ArrayList<ApplicationMsg>();
-			mainObj.channelStates.put(element, arrList);
+			mapObject.channelStates.put(element, arrList);
 		}
 		//Initialize boolean hashmap receivedMarker to false
-		for(Integer e: mainObj.neighbors){
-			mainObj.receivedMarker.put(e,false);
+		for(Integer e: mapObject.neighbors){
+			mapObject.receivedMarker.put(e,false);
 		}
-		mainObj.nodesInGraph = new boolean[mainObj.numOfNodes];
-		mainObj.myState = new StateMsg();
-		mainObj.myState.vector = new int[mainObj.numOfNodes];
+		mapObject.nodesInGraph = new boolean[mapObject.numOfNodes];
+		mapObject.myState = new StateMsg();
+		mapObject.myState.vector = new int[mapObject.numOfNodes];
 	}
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
 		//Read the values for all variables from the configuration file
-		MapProtocol mainObj = ConfigParser.readConfigFile(args[1]);
+		MapProtocol mapObject = ConfigParser.readConfigFile(args[1]);
 		// Get the node number of the current Node
-		mainObj.id = Integer.parseInt(args[0]);
-		int curNode = mainObj.id;
+		mapObject.id = Integer.parseInt(args[0]);
+		int curNode = mapObject.id;
 		//Get the configuration file from command line
-		mainObj.configurationFileName = args[1];
-		MapProtocol.outputFileName = mainObj.configurationFileName.substring(0, mainObj.configurationFileName.lastIndexOf('.'));
+		mapObject.configurationFileName = args[1];
+		MapProtocol.outputFileName = mapObject.configurationFileName.substring(0, mapObject.configurationFileName.lastIndexOf('.'));
 		//Build converge cast spanning tree in the beginning
-		ConvergeCast.buildSpanningTree(mainObj.adjMatrix);
+		ConvergeCast.buildSpanningTree(mapObject.adjMatrix);
 		// Transfer the collection of nodes from ArrayList to hash map which has node id as key since  
 		// we need to get and node as value ,it returns <id,host,port> when queried with node Id.
-		for(int i=0;i<mainObj.nodes.size();i++){
-			mainObj.store.put(mainObj.nodes.get(i).nodeId, mainObj.nodes.get(i));
+		for(int i=0;i<mapObject.nodes.size();i++){
+			mapObject.store.put(mapObject.nodes.get(i).nodeId, mapObject.nodes.get(i));
 		}
 	
 		//Create a server socket and listen for clients
-		TCPServer server = new TCPServer(mainObj);
+		TCPServer server = new TCPServer(mapObject);
 		
 		//Create channels and keep it till the end
-		TCPClient client = new TCPClient(mainObj, curNode);
+		TCPClient client = new TCPClient(mapObject, curNode);
 
-		mainObj.vector = new int[mainObj.numOfNodes];
+		mapObject.vector = new int[mapObject.numOfNodes];
 
 		//Initialize all the datastructures needed for the node to run the protocols
-		mainObj.initialize(mainObj);
+		mapObject.initialize(mapObject);
 
 		//Initially node 0 is active therefore if this node is 0 then it should be active
 		if(curNode == 0){
-			mainObj.active = true;		
+			mapObject.active = true;		
 			//Call Chandy Lamport protocol if it is node 0
-			new ChandyLamportThread(mainObj).start();		
-			new SendMessageThread(mainObj).start();
+			new ChandyLamportThread(mapObject).start();		
+			new SendMessageThread(mapObject).start();
 		}
 		
 		server.listenforinput(); //Listen for client connections

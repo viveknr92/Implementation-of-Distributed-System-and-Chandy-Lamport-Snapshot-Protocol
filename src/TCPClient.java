@@ -7,14 +7,14 @@ import java.net.UnknownHostException;
 public class TCPClient {
 	
 	//Create channels and keep it till the end
-	public TCPClient(MapProtocol mainObj, int curNode) {
-		for(int i=0;i<mainObj.numOfNodes;i++){
+	public TCPClient(MapProtocol mapObject, int curNode) {
+		for(int i=0;i<mapObject.numOfNodes;i++){
 			// If the value in adjacency matrix is one for the current Node then its a neighbor
 			//Put this in clientconnections.java file
-			if(mainObj.adjMatrix[curNode][i] == 1){
-				String hostName = mainObj.store.get(i).host;
+			if(mapObject.adjMatrix[curNode][i] == 1){
+				String hostName = mapObject.store.get(i).host;
 				//InetAddress hostName = InetAddress.getLocalHost();
-				int port = mainObj.store.get(i).port;
+				int port = mapObject.store.get(i).port;
 				InetAddress address = null;
 				try {
 					address = InetAddress.getByName(hostName);
@@ -30,8 +30,8 @@ public class TCPClient {
 				// Get the sockets for all neighbors
 				//Socket client = new Socket(hostName,port);
 				// Put the neighbor sockets in hash map called channels indexed by their node id's
-				mainObj.channels.put(i, client);
-				mainObj.neighbors.add(i);
+				mapObject.channels.put(i, client);
+				mapObject.neighbors.add(i);
 				// Get an output stream associated with each socket and put it in a hashmap oStream
 				ObjectOutputStream oos = null;
 				try {
@@ -40,7 +40,7 @@ public class TCPClient {
 					
 					e.printStackTrace();
 				}
-				mainObj.oStream.put(i, oos);	
+				mapObject.oStream.put(i, oos);	
 			}
 		}
 	}
