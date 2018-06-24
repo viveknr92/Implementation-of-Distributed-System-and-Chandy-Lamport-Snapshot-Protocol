@@ -9,6 +9,7 @@ public class ChandyLamportThread extends Thread{
 	public void run(){
 <<<<<<< HEAD
 		//If its the first time calling chandy Lamport protocol, start immediately
+<<<<<<< HEAD
 		if(mapObject.isFirstSnapshot){
 			mapObject.isFirstSnapshot = false;
 =======
@@ -16,6 +17,10 @@ public class ChandyLamportThread extends Thread{
 		if(mapObject.firstTime){
 			mapObject.firstTime = false;
 >>>>>>> 370bbc9d5302f4a56b0d479c86db7822b50f355a
+=======
+		if(mapObject.firstTime){
+			mapObject.firstTime = false;
+>>>>>>> parent of 55663d9... variable name changes to MapProtocol
 		}
 		
 		else{

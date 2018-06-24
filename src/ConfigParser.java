@@ -35,7 +35,7 @@ public class ConfigParser {
 						mySystem.snapshotDelay = Integer.parseInt(input1[4]);
 						mySystem.maxNumber = Integer.parseInt(input1[5]);
 						flag++;
-						mySystem.adjMtx = new int[mySystem.numOfNodes][mySystem.numOfNodes];
+						mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
 					}
 					else if(flag == 1 && count < mySystem.numOfNodes)
 					{							
@@ -60,7 +60,7 @@ public class ConfigParser {
 						mySystem.snapshotDelay = Integer.parseInt(input[4]);
 						mySystem.maxNumber = Integer.parseInt(input[5]);
 						flag++;
-						mySystem.adjMtx = new int[mySystem.numOfNodes][mySystem.numOfNodes];
+						mySystem.adjMatrix = new int[mySystem.numOfNodes][mySystem.numOfNodes];
 					}
 					else if(flag == 1 && count < mySystem.numOfNodes)
 					{
@@ -87,8 +87,8 @@ public class ConfigParser {
 		}
 		for(int i=0;i<mySystem.numOfNodes;i++){
 			for(int j=0;j<mySystem.numOfNodes;j++){
-				if(mySystem.adjMtx[i][j] == 1){
-					mySystem.adjMtx[j][i] = 1;
+				if(mySystem.adjMatrix[i][j] == 1){
+					mySystem.adjMatrix[j][i] = 1;
 				}
 			}
 		}
@@ -97,7 +97,7 @@ public class ConfigParser {
 
 	static void insertIntoMatrix(String[] input, MapProtocol mySystem,int curNode) {
 		for(String i:input){
-			mySystem.adjMtx[curNode][Integer.parseInt(i)] = 1;
+			mySystem.adjMatrix[curNode][Integer.parseInt(i)] = 1;
 		}
 	}
 
@@ -105,7 +105,7 @@ public class ConfigParser {
 //		ProjectMain m = ConfigParser.readConfigFile("config.txt");
 //		for(int i=0;i<m.numOfNodes;i++){
 //			for(int j=0;j<m.numOfNodes;j++){
-//				System.out.print(m.adjMtx[i][j]+"  ");
+//				System.out.print(m.adjMatrix[i][j]+"  ");
 //			}
 //			System.out.println();
 //		}

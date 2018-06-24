@@ -7,31 +7,31 @@ public class ChandyLamport {
   
 	public static void startSnapshotProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
-			mapObject.isRxdStateMsg[mapObject.id] = true;
+			mapObject.nodesInGraph[mapObject.id] = true;
 			sendMarkerMessage(mapObject,mapObject.id);
 		}
 	}
 
 	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red and sends
-		// marker messages to all its neighboring channels , starts saveChannelMsg
+		// marker messages to all its neighboring channels , starts logging
 		synchronized(mapObject){
 			if(mapObject.color == Color.BLUE){
-				mapObject.RxdMarker.put(channelNo, true);
+				mapObject.receivedMarker.put(channelNo, true);
 				mapObject.color = Color.RED;
-				mapObject.curState.active = mapObject.active;
-				mapObject.curState.vector = mapObject.vector;
-				mapObject.curState.nodeId = mapObject.id;
+				mapObject.myState.active = mapObject.active;
+				mapObject.myState.vector = mapObject.vector;
+				mapObject.myState.nodeId = mapObject.id;
 				//Record the vector timestamp when marker msg is received
-				//and nodeInfo it in globalSnapshots Arraylist
-				int[] vectorCopy = new int[mapObject.curState.vector.length];
+				//and store it in output Arraylist
+				int[] vectorCopy = new int[mapObject.myState.vector.length];
 				for(int i=0;i<vectorCopy.length;i++){
-					vectorCopy[i] = mapObject.curState.vector[i];  //Local Snapshot
+					vectorCopy[i] = mapObject.myState.vector[i];  //Local Snapshot
 				}
-				mapObject.globalSnapshots.add(vectorCopy);
+				mapObject.output.add(vectorCopy);
 
-				//saveChannelMsg = 1 demands the process to log application messages after it has become red
-				mapObject.saveChannelMsg = 1;
+				//logging = 1 demands the process to log application messages after it has become red
+				mapObject.logging = 1;
 				
 				//Send marker messages to all its neighbors
 				for(int i : mapObject.neighbors){
@@ -49,13 +49,13 @@ public class ChandyLamport {
 				//Edge case when only two nodes are there
 				if((mapObject.neighbors.size() == 1) && (mapObject.id!=0)){
 					int parent = ConvergeCast.getParent(mapObject.id);	
-					mapObject.curState.channelStates = mapObject.channelStates;
+					mapObject.myState.channelStates = mapObject.channelStates;
 					mapObject.color = Color.BLUE;
-					mapObject.saveChannelMsg = 0;
+					mapObject.logging = 0;
 					// Send channel state to parent 
 					ObjectOutputStream oos = mapObject.oStream.get(parent);
 					try {
-						oos.writeObject(mapObject.curState);
+						oos.writeObject(mapObject.myState);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -67,11 +67,11 @@ public class ChandyLamport {
 			//If color of the process is red and a marker message is received on this channel
 			else if(mapObject.color == Color.RED){
 				// Make note that marker msg was received on this channel
-				mapObject.RxdMarker.put(channelNo, true);
+				mapObject.receivedMarker.put(channelNo, true);
 				int channel=0;
 				
 				//Check if this node has received marker messages on all its incoming channels
-				while(channel<mapObject.neighbors.size() && mapObject.RxdMarker.get(mapObject.neighbors.get(channel)) == true){
+				while(channel<mapObject.neighbors.size() && mapObject.receivedMarker.get(mapObject.neighbors.get(channel)) == true){
 					channel++;
 				}
 				
@@ -80,12 +80,12 @@ public class ChandyLamport {
 				if(channel == mapObject.neighbors.size() && mapObject.id != 0){
 					int parent = ConvergeCast.getParent(mapObject.id);				
 					// Record the channelState and StateMsg and which node is sending to node 0 as nodeId
-					mapObject.curState.channelStates = mapObject.channelStates;
+					mapObject.myState.channelStates = mapObject.channelStates;
 					mapObject.color = Color.BLUE;
-					mapObject.saveChannelMsg = 0;
+					mapObject.logging = 0;
 					ObjectOutputStream oos = mapObject.oStream.get(parent);
 					try {
-						oos.writeObject(mapObject.curState);
+						oos.writeObject(mapObject.myState);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -94,10 +94,10 @@ public class ChandyLamport {
 				
 				//If node_0 has receives all marker messages restart state of it
 				if(channel == mapObject.neighbors.size() &&  mapObject.id == 0){
-					mapObject.curState.channelStates = mapObject.channelStates;
-					mapObject.stateMsg.put(mapObject.id, mapObject.curState);
+					mapObject.myState.channelStates = mapObject.channelStates;
+					mapObject.stateMessages.put(mapObject.id, mapObject.myState);
 					mapObject.color = Color.BLUE;
-					mapObject.saveChannelMsg = 0;
+					mapObject.logging = 0;
 				}
 			}
 		}
@@ -108,15 +108,15 @@ public class ChandyLamport {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 
-			while(node < mapObject.isRxdStateMsg.length && mapObject.isRxdStateMsg[node] == true){
+			while(node < mapObject.nodesInGraph.length && mapObject.nodesInGraph[node] == true){
 				node++;
 			}
 			//If it has received all the state messages 
-			if(node == mapObject.isRxdStateMsg.length){
+			if(node == mapObject.nodesInGraph.length){
 				//Iterate each state message to check if any process is active
-				for(state=0; state < mapObject.stateMsg.size(); state++){
+				for(state=0; state < mapObject.stateMessages.size(); state++){
 					//If any process is active restart snapshot protocol
-					if(mapObject.stateMsg.get(state).active == true){
+					if(mapObject.stateMessages.get(state).active == true){
 						return true;
 					}
 				}
@@ -128,11 +128,15 @@ public class ChandyLamport {
 <<<<<<< HEAD
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
+<<<<<<< HEAD
 						StateMsg value = mapObject.stateMsg.get(channel);
 =======
 						//If channel id not empty restart snapshot protocol
 						StateMsg value = mapObject.stateMessages.get(channel);
 >>>>>>> 370bbc9d5302f4a56b0d479c86db7822b50f355a
+=======
+						StateMsg value = mapObject.stateMessages.get(channel);
+>>>>>>> parent of 55663d9... variable name changes to MapProtocol
 						for(ArrayList<ApplicationMsg> g:value.channelStates.values()){
 							if(!g.isEmpty()){
 								return true;
@@ -152,16 +156,16 @@ public class ChandyLamport {
 	}
 
 
-	//When saveChannelMsg is enabled save all the application messages sent on each channel
+	//When logging is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
 	public static void logMessage(int channelNo, ApplicationMsg m, MapProtocol mapObject) {
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
-			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
+			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.receivedMarker.get(channelNo) != true){
 				mapObject.channelStates.get(channelNo).add(m);
 			}
 			// or create a list and add the message into it
-			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
+			else if((mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.receivedMarker.get(channelNo) != true){
 				ArrayList<ApplicationMsg> msgs = mapObject.channelStates.get(channelNo);
 				msgs.add(m);
 				mapObject.channelStates.put(channelNo, msgs);
