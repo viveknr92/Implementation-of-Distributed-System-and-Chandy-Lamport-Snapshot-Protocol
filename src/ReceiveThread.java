@@ -27,9 +27,9 @@ public class ReceiveThread extends Thread {
 				// Synchronizing mapObject so that multiple threads access mapObject in a synchronized way
 				synchronized(mapObject){
 
-					//If MarkerMsg send marker messages to all neighboring nodes
-					if(msg instanceof MarkerMsg){
-						int channelNo = ((MarkerMsg) msg).nodeId;
+					//If MarkerMessage send marker messages to all neighboring nodes
+					if(msg instanceof MarkerMessage){
+						int channelNo = ((MarkerMessage) msg).nodeId;
 						ChandyLamport.sendMarkerMessage(mapObject,channelNo);
 					}	
 
@@ -49,16 +49,16 @@ public class ReceiveThread extends Thread {
 						ChandyLamport.saveChannelMessages(channelNo,((AppMessage) msg) ,mapObject);
 					}
 
-					//If StateMsg then and nodeId is 0 check for termination
+					//If StateMessage then and nodeId is 0 check for termination
 					//else forward it to the parent on converge cast tree towards node_0
-					else if(msg instanceof StateMsg){
+					else if(msg instanceof StateMessage){
 						if(mapObject.id == 0){
 							//Message received at node_0 from nodeId
-							mapObject.stateMsg.put(((StateMsg)msg).nodeId,((StateMsg)msg));
-							mapObject.isRxdStateMsg[((StateMsg) msg).nodeId] = true;
+							mapObject.stateMsg.put(((StateMessage)msg).nodeId,((StateMessage)msg));
+							mapObject.isRxdStateMsg[((StateMessage) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								boolean restartChandy = ChandyLamport.detectTermination(mapObject,((StateMsg)msg));
+								boolean restartChandy = ChandyLamport.detectTermination(mapObject,((StateMessage)msg));
 								if(restartChandy){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
@@ -67,12 +67,12 @@ public class ReceiveThread extends Thread {
 							}
 						}
 						else{
-							ChandyLamport.sendToParent(mapObject,((StateMsg)msg));
+							ChandyLamport.sendToParent(mapObject,((StateMessage)msg));
 						}
 					}
 					
 					//If finishMsg send to all neighbors
-					else if(msg instanceof FinishMsg){	
+					else if(msg instanceof FinishMessage){	
 						ChandyLamport.sendFinishMsg(mapObject);
 					}
 

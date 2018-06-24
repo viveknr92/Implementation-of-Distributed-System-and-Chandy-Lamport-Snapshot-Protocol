@@ -35,7 +35,7 @@ public class ChandyLamport {
 				
 				//Send marker messages to all its neighbors
 				for(int i : mapObject.neighbors){
-					MarkerMsg m = new MarkerMsg();
+					MarkerMessage m = new MarkerMessage();
 					m.nodeId = mapObject.id;
 					ObjectOutputStream oos = mapObject.oStream.get(i);
 					try {
@@ -78,7 +78,7 @@ public class ChandyLamport {
 				// send State Msg to node_0
 				if(channel == mapObject.neighbors.size() && mapObject.id != 0){
 					int parent = ConvergeCast.getParent(mapObject.id);				
-					// Record the channelState and StateMsg and which node is sending to node 0 as nodeId
+					// Record the channelState and StateMessage and which node is sending to node 0 as nodeId
 					mapObject.curState.channelStates = mapObject.channelStates;
 					mapObject.color = Color.BLUE;
 					mapObject.saveChannelMsg = 0;
@@ -103,7 +103,7 @@ public class ChandyLamport {
 	}
 
 	// When node_0 receives state from all nodes
-	public static boolean detectTermination(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
+	public static boolean detectTermination(MapProtocol mapObject, StateMessage msg) throws InterruptedException {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 
@@ -126,7 +126,7 @@ public class ChandyLamport {
 					for(channel=0; channel < mapObject.numOfNodes; channel++){
 						// If any process has non-empty channel,  then wait for snapshot 
 						// delay and restart snapshot protocol
-						StateMsg value = mapObject.stateMsg.get(channel);
+						StateMessage value = mapObject.stateMsg.get(channel);
 						for(ArrayList<AppMessage> cState : value.channelStates.values()){
 							if(!cState.isEmpty()){
 //								System.out.println("************** Channels are not empty "+k);
@@ -170,7 +170,7 @@ public class ChandyLamport {
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void sendToParent(MapProtocol mapObject, StateMsg stateMsg) {
+	public static void sendToParent(MapProtocol mapObject, StateMessage stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
 			// Send stateMsg to the parent
@@ -188,7 +188,7 @@ public class ChandyLamport {
 		synchronized(mapObject){
 			new OutputWriter(mapObject).writeToFile();
 			for(int s : mapObject.neighbors){
-				FinishMsg m = new FinishMsg();
+				FinishMessage m = new FinishMessage();
 				ObjectOutputStream oos = mapObject.oStream.get(s);
 				try {
 					oos.writeObject(m);
