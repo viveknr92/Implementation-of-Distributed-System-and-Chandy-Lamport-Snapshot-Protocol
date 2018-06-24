@@ -12,40 +12,36 @@ public class OutputWriter {
 	}
 
 
-	public void writeToFile() {
+	public void storeSnapshotsToFile() {
 		String fileName = MapProtocol.outFile+"-"+mapObject.id+".out";
 		synchronized(mapObject.globalSnapshots){
 			try {
 				File file = new File(fileName);
-				FileWriter fileWriter;
+				FileWriter fW;
 				if(file.exists()){
-					fileWriter = new FileWriter(file,true);
+					fW = new FileWriter(file,true);
 				}
 				else
 				{
-					fileWriter = new FileWriter(file);
+					fW = new FileWriter(file);
 				}
-				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-				/*if(file.length()!=0){
-                bufferedWriter.write("\n");
-            }*/
+				BufferedWriter bW = new BufferedWriter(fW);
+
    
 				for(int i=0;i<mapObject.globalSnapshots.size();i++){
 					for(int j:mapObject.globalSnapshots.get(i)){
-						bufferedWriter.write(j+" ");
+						bW.write(j+" ");
 						
 					}
 					if(i<(mapObject.globalSnapshots.size()-1)){
-	            bufferedWriter.write("\n");
+						bW.write("\n");
 					}
 				}			
 				mapObject.globalSnapshots.clear();
-				// Always close files.
-				bufferedWriter.close();
+				bW.close();
 			}
 			catch(IOException ex) {
 				System.out.println("Error writing to file '" + fileName + "'");
-				// Or we could just do this: ex.printStackTrace();
 			}
 		}
 	}

@@ -11,7 +11,7 @@ public class Message implements Serializable {
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
 class AppMessage extends Message implements Serializable{
-	String msg = "hello";
+	String msg = "Test";
 	int nodeId;
 	int[] vector;
 }
