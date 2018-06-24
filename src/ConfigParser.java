@@ -8,24 +8,24 @@ public class ConfigParser {
 	public static MapProtocol readConfigFile(String name) throws IOException{
 		MapProtocol mySystem = new MapProtocol();
 		int count = 0,flag = 0;
-		// Keeps track of current node
+		// Variable to keep track of the current node whose neighbors are being updated
 		int curNode = 0;
-		
+		// The name of the file to open.
 		String curDir = System.getProperty("user.dir");
 		String fileName = curDir+"/"+name;
-		
+		// This will reference one line at a time
 		String line = null;
 		try {
-			
+			// FileReader reads text files in the default encoding.
 			FileReader fileReader = new FileReader(fileName);
-			
+			// Always wrap FileReader in BufferedReader.
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			while((line = bufferedReader.readLine()) != null) {
 				if(line.length() == 0 || line.startsWith("#"))
 					continue;
 				// Ignore comments and consider only those lines which are not comments
 				if(line.contains("#")){
-					String[] input = line.split("#.*$"); //Ignore text after # symbol
+					String[] input = line.split("#.*$");
 					String[] input1 = input[0].split("\\s+");
 					if(flag == 0 && input1.length == 6){
 						mySystem.numOfNodes = Integer.parseInt(input1[0]);
@@ -76,7 +76,7 @@ public class ConfigParser {
 					}
 				}
 			}
-			
+			// Always close files.
 			bufferedReader.close();  
 		}
 		catch(FileNotFoundException ex) {
@@ -89,6 +89,9 @@ public class ConfigParser {
 			for(int j=0;j<mySystem.numOfNodes;j++){
 				if(mySystem.adjMatrix[i][j] == 1){
 					mySystem.adjMatrix[j][i] = 1;
+				}
+				if (mySystem.adjMatrix[i][i] == 1) {
+					mySystem.adjMatrix[i][i] = 0;
 				}
 			}
 		}
