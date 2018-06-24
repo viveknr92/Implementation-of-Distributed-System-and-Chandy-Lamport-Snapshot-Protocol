@@ -46,7 +46,7 @@ public class ReceiveThread extends Thread {
 						//Save the channel No from where AppMsg was sent
 						int channelNo = ((ApplicationMsg) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
-						ChandyLamport.logMessage(channelNo,((ApplicationMsg) msg) ,mapObject);
+						ChandyLamport.saveChannelMessages(channelNo,((ApplicationMsg) msg) ,mapObject);
 					}
 
 					//If StateMsg then and nodeId is 0 check for termination
@@ -67,7 +67,7 @@ public class ReceiveThread extends Thread {
 							}
 						}
 						else{
-							ChandyLamport.forwardToParent(mapObject,((StateMsg)msg));
+							ChandyLamport.sendToParent(mapObject,((StateMsg)msg));
 						}
 					}
 					
