@@ -5,7 +5,6 @@ import java.net.Socket;
 public class TCPServer{
 
 	ServerSocket listener = null;
-	// This node listens as a Server for the clients requests 
 	Socket socket = null;
 	int serverPort;
 	private MapProtocol mapObject;
@@ -13,7 +12,7 @@ public class TCPServer{
 	public TCPServer(MapProtocol mapObject) {
 		
 		this.mapObject = mapObject; //Global mapObject
-		// Get the port number on which this node should listen 
+		// port number on which this node should listen 
 		serverPort = mapObject.nodes.get(mapObject.id).port;
 		try {
 			listener = new ServerSocket(serverPort);
@@ -29,7 +28,7 @@ public class TCPServer{
 	}
 	
 	public void listenforinput(){
-		// Start server on this node's assigned port
+		//Listen and accept for any client connections
 		try {
 			while (true) {
 				try {
