@@ -39,7 +39,7 @@ public class ChandyLamport {
 //				}
 				int[] vectorCopy = new int[mainObj.myState.vector.length];
 				for(int i=0;i<vectorCopy.length;i++){
-					vectorCopy[i] = mainObj.myState.vector[i]; 
+					vectorCopy[i] = mainObj.myState.vector[i];  //Local Snapshot
 				}
 //				synchronized(mainObj.output){
 				mainObj.output.add(vectorCopy);
@@ -59,6 +59,9 @@ public class ChandyLamport {
 						e.printStackTrace();
 					}
 				}
+				
+				
+				//Edge case when only two nodes are there
 				if((mainObj.neighbors.size() == 1) && (mainObj.id!=0)){
 					int parent = ConvergeCast.getParent(mainObj.id);	
 					mainObj.myState.channelStates = mainObj.channelStates;
@@ -66,7 +69,6 @@ public class ChandyLamport {
 					mainObj.logging = 0;
 					// Send channel state to parent 
 					ObjectOutputStream oos = mainObj.oStream.get(parent);
-//					System.out.println("Sending State Msg  by  "+mainObj.id+" and process state is  "+mainObj.myState.active);
 					try {
 						oos.writeObject(mainObj.myState);
 					} catch (IOException e) {

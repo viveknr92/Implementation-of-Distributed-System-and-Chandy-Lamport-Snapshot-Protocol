@@ -13,7 +13,6 @@ public class SendMessageThread extends Thread{
 		int numMsgs = 1;
 		int minSendDelay = 0;
 		synchronized(mainObj){
-			//TODO change this code
 			numMsgs = this.getRandomNumber(mainObj.minPerActive,mainObj.maxPerActive);
 			// If random number is 0 then since node 0 is the only process active in the beginning it will not start
 			// therefore get a bigger random number
