@@ -35,18 +35,18 @@ public class ReceiveThread extends Thread {
 
 					//If AppMsg and node is passive becomes active only if
 					//it has sent fewer than maxNumber messages
-					else if((mapObject.active == false) && msg instanceof ApplicationMsg && 
+					else if((mapObject.active == false) && msg instanceof AppMessage && 
 							mapObject.msgSentCount < mapObject.maxNumber && mapObject.saveChannelMsg == 0){
 						mapObject.active = true; 
 						new SendMessageThread(mapObject).start();
 					}
 					
 					//If AppMsg and saveChannelMsg = 1 then save it
-					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
+					else if((mapObject.active == false) && (msg instanceof AppMessage) && (mapObject.saveChannelMsg == 1)){
 						//Save the channel No from where AppMsg was sent
-						int channelNo = ((ApplicationMsg) msg).nodeId;
+						int channelNo = ((AppMessage) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
-						ChandyLamport.saveChannelMessages(channelNo,((ApplicationMsg) msg) ,mapObject);
+						ChandyLamport.saveChannelMessages(channelNo,((AppMessage) msg) ,mapObject);
 					}
 
 					//If StateMsg then and nodeId is 0 check for termination
@@ -76,10 +76,10 @@ public class ReceiveThread extends Thread {
 						ChandyLamport.sendFinishMsg(mapObject);
 					}
 
-					if(msg instanceof ApplicationMsg){
+					if(msg instanceof AppMessage){
 						//Implementing vector protocol on receiver side
 						for(int i=0;i<mapObject.numOfNodes;i++){
-							mapObject.vector[i] = Math.max(mapObject.vector[i], ((ApplicationMsg) msg).vector[i]);
+							mapObject.vector[i] = Math.max(mapObject.vector[i], ((AppMessage) msg).vector[i]);
 						}
 						mapObject.vector[mapObject.id]++;
 					}

@@ -10,7 +10,7 @@ public class Message implements Serializable {
 }
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
-class ApplicationMsg extends Message implements Serializable{
+class AppMessage extends Message implements Serializable{
 	String msg = "hello";
 	int nodeId;
 	int[] vector;
@@ -28,7 +28,7 @@ class MarkerMsg extends Message implements Serializable{
 class StateMsg extends Message implements Serializable{
 	boolean active;
 	int nodeId;
-	HashMap<Integer,ArrayList<ApplicationMsg>> channelStates;
+	HashMap<Integer,ArrayList<AppMessage>> channelStates;
 	int[] vector;
 }
 

@@ -30,7 +30,7 @@ public class SendMessageThread extends Thread{
 
 				if(mapObject.active == true){
 					//send application message
-					ApplicationMsg m = new ApplicationMsg(); 
+					AppMessage m = new AppMessage(); 
 					// Implementing Vector clock protocol
 					mapObject.vector[mapObject.id]++;
 					m.vector = new int[mapObject.vector.length];

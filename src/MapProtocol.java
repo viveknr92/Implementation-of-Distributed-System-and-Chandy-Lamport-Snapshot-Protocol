@@ -32,7 +32,7 @@ public class MapProtocol implements Serializable  {
 	//Mapping between each sent message with object output stream
 	HashMap<Integer,ObjectOutputStream> oStream = new HashMap<Integer,ObjectOutputStream>();
 	// Mapping between ArrayList of messages for each process receiving incoming messages
-	HashMap<Integer,ArrayList<ApplicationMsg>> channelStates;
+	HashMap<Integer,ArrayList<AppMessage>> channelStates;
 	// Mapping between incoming channels and boolean received marker message
 	HashMap<Integer,Boolean> RxdMarker;
 	// Mapping between processes and StMsg which stores all state messages
@@ -61,14 +61,14 @@ public class MapProtocol implements Serializable  {
 	
 	//Initialize again before taking another snapshot
 	void initialize(MapProtocol mapObject){
-		mapObject.channelStates = new HashMap<Integer,ArrayList<ApplicationMsg>>();
+		mapObject.channelStates = new HashMap<Integer,ArrayList<AppMessage>>();
 		mapObject.RxdMarker = new HashMap<Integer,Boolean>();
 		mapObject.stateMsg = new HashMap<Integer,StateMsg>();	
 
 		Set<Integer> keys = mapObject.channels.keySet();
 		
 		for(Integer element : keys){
-			ArrayList<ApplicationMsg> arrList = new ArrayList<ApplicationMsg>();
+			ArrayList<AppMessage> arrList = new ArrayList<AppMessage>();
 			mapObject.channelStates.put(element, arrList);
 		}
 		
