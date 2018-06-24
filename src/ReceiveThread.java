@@ -30,7 +30,7 @@ public class ReceiveThread extends Thread {
 					//If MarkerMsg send marker messages to all neighboring nodes
 					if(msg instanceof MarkerMsg){
 						int channelNo = ((MarkerMsg) msg).nodeId;
-						ChandyLamport.sendMarkerMsg(mapObject,channelNo);
+						ChandyLamport.sendMarkerMessage(mapObject,channelNo);
 					}	
 
 					//If ApplicationMsg and node is passive becomes active only if
@@ -41,12 +41,21 @@ public class ReceiveThread extends Thread {
 						new SendMessageThread(mapObject).start();
 					}
 					
+<<<<<<< HEAD
 					//If ApplicationMsg and saveChannelMsg = 1 then save it
 					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
 						//Save the channel No from where ApplicationMsg was sent
 						int channelNo = ((ApplicationMsg) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
 						ChandyLamport.saveChannelMsgs(channelNo,((ApplicationMsg) msg) ,mapObject);
+=======
+					//If AppMsg and saveChannelMsg = 1 then save it
+					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
+						//Save the channel No from where AppMsg was sent
+						int channelNo = ((ApplicationMsg) msg).nodeId;
+						//Log the application message since saveChannelMsg is enabled
+						ChandyLamport.logMessage(channelNo,((ApplicationMsg) msg) ,mapObject);
+>>>>>>> parent of a3d8bdd... changes to var names and method names
 					}
 
 					//If StateMsg then and nodeId is 0 check for termination
@@ -58,7 +67,7 @@ public class ReceiveThread extends Thread {
 							mapObject.isRxdStateMsg[((StateMsg) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								boolean restartChandy = ChandyLamport.detectTermination(mapObject,((StateMsg)msg));
+								boolean restartChandy = ChandyLamport.processStateMessages(mapObject,((StateMsg)msg));
 								if(restartChandy){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
@@ -67,7 +76,7 @@ public class ReceiveThread extends Thread {
 							}
 						}
 						else{
-							ChandyLamport.sendToParent(mapObject,((StateMsg)msg));
+							ChandyLamport.forwardToParent(mapObject,((StateMsg)msg));
 						}
 					}
 					

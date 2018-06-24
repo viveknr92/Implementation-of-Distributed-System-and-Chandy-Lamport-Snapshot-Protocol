@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public class ChandyLamport { 
   
-	public static void beginCLProtocol(MapProtocol mapObject) {
+	public static void startSnapshotProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
 			mapObject.isRxdStateMsg[mapObject.id] = true;
-			sendMarkerMsg(mapObject,mapObject.id);
+			sendMarkerMessage(mapObject,mapObject.id);
 		}
 	}
 
-	public static void sendMarkerMsg(MapProtocol mapObject, int channelNo){
+	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red and sends
 		// marker messages to all its neighboring channels , starts saveChannelMsg
 		synchronized(mapObject){
@@ -103,7 +103,7 @@ public class ChandyLamport {
 	}
 
 	// When node_0 receives state from all nodes
-	public static boolean detectTermination(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
+	public static boolean processStateMessages(MapProtocol mapObject, StateMsg msg) throws InterruptedException {
 		int channel=0,state=0,node=0;
 		synchronized(mapObject){
 			// Check if node_0 has received state message from all the nodes 
@@ -153,7 +153,11 @@ public class ChandyLamport {
 
 	//When saveChannelMsg is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
+<<<<<<< HEAD
 	public static void saveChannelMsgs(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
+=======
+	public static void logMessage(int channelNo,ApplicationMsg m, MapProtocol mapObject) {
+>>>>>>> parent of a3d8bdd... changes to var names and method names
 		synchronized(mapObject){
 			// if the ArrayList is already there just add this message to it 
 			if(!(mapObject.channelStates.get(channelNo).isEmpty()) && mapObject.RxdMarker.get(channelNo) != true){
@@ -170,7 +174,7 @@ public class ChandyLamport {
 
 	// A process received a state msg on its channel and the process is not Node 0
 	// therefore simply forward it over converge cast tree towards Node 0
-	public static void sendToParent(MapProtocol mapObject, StateMsg stateMsg) {
+	public static void forwardToParent(MapProtocol mapObject, StateMsg stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
 			// Send stateMsg to the parent

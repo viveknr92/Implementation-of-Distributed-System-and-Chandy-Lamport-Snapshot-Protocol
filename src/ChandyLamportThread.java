@@ -20,6 +20,6 @@ public class ChandyLamportThread extends Thread{
 			}
 		}
 		//Irrespective of first or second time we start the protocol if this thread is started
-		ChandyLamport.beginCLProtocol(mapObject);
+		ChandyLamport.startSnapshotProtocol(mapObject);
 	}
 }
