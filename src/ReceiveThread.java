@@ -33,7 +33,7 @@ public class ReceiveThread extends Thread {
 						ChandyLamport.sendMarkerMessage(mapObject,channelNo);
 					}	
 
-					//If ApplicationMsg and node is passive becomes active only if
+					//If AppMsg and node is passive becomes active only if
 					//it has sent fewer than maxNumber messages
 					else if((mapObject.active == false) && msg instanceof ApplicationMsg && 
 							mapObject.msgSentCount < mapObject.maxNumber && mapObject.saveChannelMsg == 0){
@@ -41,21 +41,12 @@ public class ReceiveThread extends Thread {
 						new SendMessageThread(mapObject).start();
 					}
 					
-<<<<<<< HEAD
-					//If ApplicationMsg and saveChannelMsg = 1 then save it
-					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
-						//Save the channel No from where ApplicationMsg was sent
-						int channelNo = ((ApplicationMsg) msg).nodeId;
-						//Log the application message since saveChannelMsg is enabled
-						ChandyLamport.saveChannelMsgs(channelNo,((ApplicationMsg) msg) ,mapObject);
-=======
 					//If AppMsg and saveChannelMsg = 1 then save it
 					else if((mapObject.active == false) && (msg instanceof ApplicationMsg) && (mapObject.saveChannelMsg == 1)){
 						//Save the channel No from where AppMsg was sent
 						int channelNo = ((ApplicationMsg) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
 						ChandyLamport.logMessage(channelNo,((ApplicationMsg) msg) ,mapObject);
->>>>>>> parent of a3d8bdd... changes to var names and method names
 					}
 
 					//If StateMsg then and nodeId is 0 check for termination
