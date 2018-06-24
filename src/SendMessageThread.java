@@ -10,23 +10,23 @@ public class SendMessageThread extends Thread{
 	void sendMessages() throws InterruptedException{
 
 		// get a random number between minPerActive to maxPerActive to send that many messages
-		int numMsgs = 1;
+		int randMessages = 1;
 		int minSendDelay = 0;
 		synchronized(mapObject){
-			numMsgs = this.getRandomNumber(mapObject.minPerActive,mapObject.maxPerActive);
+			randMessages = this.getRandomNumber(mapObject.minPerActive,mapObject.maxPerActive);
 			// If random number is 0
-			if(numMsgs == 0){
-				numMsgs = this.getRandomNumber(mapObject.minPerActive + 1,mapObject.maxPerActive);
+			if(randMessages == 0){
+				randMessages = this.getRandomNumber(mapObject.minPerActive + 1,mapObject.maxPerActive);
 			}
 			minSendDelay = mapObject.minSendDelay;
 		}
 
 		//Send the messages to random neighbors each time and add minSendDelay between each send
-		for(int i=0;i<numMsgs;i++){
+		for(int i=0;i<randMessages;i++){
 			synchronized(this){
 				//get a random neigbour
-				int neighborIndex = this.getRandomNumber(0,mapObject.neighbors.size()-1);
-				int curNeighbor = mapObject.neighbors.get(neighborIndex);
+				int randNeighborNode = this.getRandomNumber(0,mapObject.neighbors.size()-1);
+				int curNeighbor = mapObject.neighbors.get(randNeighborNode);
 
 				if(mapObject.active == true){
 					//send application message
