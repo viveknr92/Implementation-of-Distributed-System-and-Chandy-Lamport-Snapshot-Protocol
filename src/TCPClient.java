@@ -17,12 +17,15 @@ public class TCPClient {
 					address = InetAddress.getByName(hostName);
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
+					System.exit(1);
 				}
 				Socket client = null;
 				try {
 					client = new Socket(address,port);
 				} catch (IOException e) {
+					System.out.println("Connection Broken");
 					e.printStackTrace();
+					System.exit(1);
 				}
 				//Send client request to all neighboring nodes
 				mapObject.channels.put(i, client);
