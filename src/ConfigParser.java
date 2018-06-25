@@ -9,18 +9,17 @@ public class ConfigParser {
 		MapProtocol mapFile = new MapProtocol();
 		int count = 0,flag = 0;
 		// Keeps track of current node
-		int currentNode = 0;
+		int curNode = 0;
 		
-		String currentDir = System.getProperty("user.dir");
-		String fileName = currentDir+"/"+name;
+		String fileName = System.getProperty("user.dir") + "/" + name;
 		
 		String line = null;
 		try {
 			
-			FileReader fileReader = new FileReader(fileName);
+			FileReader fr = new FileReader(fileName);
 			
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			while((line = bufferedReader.readLine()) != null) {
+			BufferedReader br = new BufferedReader(fr);
+			while((line = br.readLine()) != null) {
 				if(line.length() == 0 || line.startsWith("#"))
 					continue;
 				// Ignore comments and consider only those lines which are not comments
@@ -46,8 +45,8 @@ public class ConfigParser {
 						}
 					}
 					else if(flag == 2){
-						insertIntoMatrix(input1,mapFile, currentNode);
-						currentNode++;
+						insertIntoMatrix(input1,mapFile, curNode);
+						curNode++;
 					}
 				}
 				else {
@@ -71,12 +70,12 @@ public class ConfigParser {
 						}
 					}
 					else if(flag == 2){
-						insertIntoMatrix(input,mapFile,currentNode);
-						currentNode++;
+						insertIntoMatrix(input,mapFile,curNode);
+						curNode++;
 					}
 				}
 			}
-			bufferedReader.close();  
+			br.close();  
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" +fileName + "'");                
@@ -88,6 +87,9 @@ public class ConfigParser {
 			for(int j=0;j<mapFile.numOfNodes;j++){
 				if(mapFile.adjMtx[i][j] == 1){
 					mapFile.adjMtx[j][i] = 1;
+				}
+				if(mapFile.adjMtx[i][i] == 1){
+					mapFile.adjMtx[i][i] = 0;
 				}
 			}
 		}
