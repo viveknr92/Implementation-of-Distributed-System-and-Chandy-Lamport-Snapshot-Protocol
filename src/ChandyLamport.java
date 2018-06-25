@@ -14,7 +14,8 @@ public class ChandyLamport {
 
 	public static void sendMarkerMessage(MapProtocol mapObject, int channelNo){
 		// Node which receives marker message turns red and sends
-		// marker messages to all its neighboring channels , starts saveChannelMsg
+		// marker messages to all its neighboring channels.
+		// Also save all the incoming application messages
 		synchronized(mapObject){
 			if(mapObject.color == Color.BLUE){
 				mapObject.RxdMarker.put(channelNo, true);
@@ -23,14 +24,14 @@ public class ChandyLamport {
 				mapObject.curState.vector = mapObject.vector;
 				mapObject.curState.nodeId = mapObject.id;
 				//Record the vector timestamp when marker msg is received
-				//and nodeInfo it in globalSnapshots Arraylist
+				//and store it in globalSnapshots Arraylist
 				int[] vectorCopy = new int[mapObject.curState.vector.length];
 				for(int i=0;i<vectorCopy.length;i++){
 					vectorCopy[i] = mapObject.curState.vector[i];  //Local Snapshot
 				}
 				mapObject.globalSnapshots.add(vectorCopy);
 
-				//saveChannelMsg = 1 demands the process to log application messages after it has become red
+				//Save the channel state and application messages after it has become red
 				mapObject.saveChannelMsg = 1;
 				
 				//Send marker messages to all its neighbors
@@ -124,24 +125,18 @@ public class ChandyLamport {
 				if(state == mapObject.numOfNodes){
 					//Check if any channel is empty or not
 					for(channel=0; channel < mapObject.numOfNodes; channel++){
-						// If any process has non-empty channel,  then wait for snapshot 
-						// delay and restart snapshot protocol
+						//If channel id not empty restart snapshot protocol
 						StateMessage value = mapObject.stateMsg.get(channel);
 						for(ArrayList<AppMessage> cState : value.channelStates.values()){
 							if(!cState.isEmpty()){
-//								System.out.println("************** Channels are not empty "+k);
-//								for(AppMessage m:g)
-//									System.out.println(m.nodeId);
-								//If channels are not empty immediately return, restart CL protocol is true
 								return true;
 							}
 						}
 					}
 				}
-				//If the above check has passed then it means all channels are empty and all processes are 
-				//passive and now node 0 can announce termination - it can a send finish message to all its neighbors
+
+				//If channels are empty and nodes are passive sendFinishMsg for termination
 				if(channel == mapObject.numOfNodes){
-//					System.out.println("Node 0 is sending finish message since all processes are passive and channels empty");					
 					sendFinishMsg(mapObject);
 					return false;
 				}
@@ -170,8 +165,8 @@ public class ChandyLamport {
 		}
 	}
 
-	// A process received a state msg on its channel and the process is not Node 0
-	// therefore simply forward it over converge cast tree towards Node 0
+	// For all nodes other than node_0
+	// forward StateMsg to converge cast tree towards node_0
 	public static void sendToParent(MapProtocol mapObject, StateMessage stateMsg) {
 		synchronized(mapObject){
 			int parent = ConvergeCast.getParent(mapObject.id);
