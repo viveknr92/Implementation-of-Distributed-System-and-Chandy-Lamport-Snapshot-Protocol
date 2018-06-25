@@ -9,14 +9,23 @@ enum Color { RED,BLUE};
 @SuppressWarnings("serial")
 public class MapProtocol implements Serializable  {
 	String configFileName;
+	
+	//Variables required for MAP Protocol
 	int id;
 	int[][] adjMtx;
+	ArrayList<Integer> neighbors;
 	int[] vector;
 	boolean active;
-	int numOfNodes,minPerActive,maxPerActive,minSendDelay,snapshotDelay,maxNumber;
-	ArrayList<Integer> neighbors;
 	int msgSentCount;
 	
+	int numOfNodes;
+	int minPerActive;
+	int maxPerActive;
+	int minSendDelay;
+	int snapshotDelay;
+	int maxNumber;
+	
+	//Variables required for ChandyLamport Protocol
 	Color color;	
 	int saveChannelMsg;
 	boolean isFirstSnapshot;
@@ -77,9 +86,9 @@ public class MapProtocol implements Serializable  {
 
 		Set<Integer> keys = mapObject.channels.keySet();
 		
-		for(Integer element : keys){
+		for(Integer e : keys){
 			ArrayList<AppMessage> arrList = new ArrayList<AppMessage>();
-			mapObject.channelStates.put(element, arrList);
+			mapObject.channelStates.put(e, arrList);
 		}
 		
 		for(Integer e: mapObject.neighbors){
