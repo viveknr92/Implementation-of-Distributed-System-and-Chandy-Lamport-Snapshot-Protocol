@@ -35,14 +35,20 @@ public class ReceiveThread extends Thread {
 
 					//If AppMsg and node is passive becomes active only if
 					//it has sent fewer than maxNumber messages
-					else if((mapObject.active == false) && msg instanceof AppMessage && 
-							mapObject.msgSentCount < mapObject.maxNumber && mapObject.saveChannelMsg == 0){
+					else if((msg instanceof AppMessage) && 
+							(mapObject.active == false) && 
+							(mapObject.msgSentCount < mapObject.maxNumber) && 
+							(mapObject.saveChannelMsg == 0))
+					{
 						mapObject.active = true; 
 						new SendMessageThread(mapObject).start();
 					}
 					
 					//If AppMsg and saveChannelMsg = 1 then save it
-					else if((mapObject.active == false) && (msg instanceof AppMessage) && (mapObject.saveChannelMsg == 1)){
+					else if((msg instanceof AppMessage) && 
+							(mapObject.active == false) && 
+							(mapObject.saveChannelMsg == 1))
+					{
 						//Save the channel No from where AppMsg was sent
 						int channelNo = ((AppMessage) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
