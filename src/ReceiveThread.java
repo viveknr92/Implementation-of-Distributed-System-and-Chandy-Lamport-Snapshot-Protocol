@@ -26,7 +26,7 @@ public class ReceiveThread extends Thread {
 				msg = (Message) ois.readObject();
 				// Synchronizing mapObject so that multiple threads access mapObject in a synchronized way
 				synchronized(mapObject){
-					boolean isTerminated = false;
+					boolean isNotTerminated = true;
 					//If MarkerMessage send marker messages to all neighboring nodes
 					if(msg instanceof MarkerMessage){
 						int channelNo = ((MarkerMessage) msg).nodeId;
@@ -54,7 +54,7 @@ public class ReceiveThread extends Thread {
 						//Log the application message since saveChannelMsg is enabled
 						ChandyLamport.saveChannelMessages(channelNo,((AppMessage) msg) ,mapObject);
 					}
-
+					
 					//If StateMessage then and nodeId is 0 check for termination
 					//else forward it to the parent on converge cast tree towards node_0
 					else if(msg instanceof StateMessage){
@@ -64,8 +64,8 @@ public class ReceiveThread extends Thread {
 							mapObject.isRxdStateMsg[((StateMessage) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								isTerminated = ChandyLamport.detectTermination(mapObject,((StateMessage)msg));
-								if(!isTerminated){
+								isNotTerminated = ChandyLamport.detectTermination(mapObject,((StateMessage)msg));
+								if(isNotTerminated){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
 									new ChandyLamportThread(mapObject).start();	
