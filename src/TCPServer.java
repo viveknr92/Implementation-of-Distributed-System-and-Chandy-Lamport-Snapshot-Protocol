@@ -19,13 +19,11 @@ public class TCPServer{
 			listener = new ServerSocket(serverPort);
 		} 
 		catch(BindException e) {
-			e.printStackTrace();
-			System.out.println("Port not available");
+			System.out.println(e.getMessage());
 			System.exit(1);
 		}
-		catch (IOException e1) {
-			e1.printStackTrace();
-			System.out.println("Connection Broken");
+		catch (IOException e) {
+			System.out.println(e.getMessage());
 			System.exit(1);
 		}
 		
@@ -43,7 +41,6 @@ public class TCPServer{
 				try {
 					socket = listener.accept();
 				} catch (IOException e1) {
-					e1.printStackTrace();
 					System.out.println("Connection Broken");
 					System.exit(1);
 				}
