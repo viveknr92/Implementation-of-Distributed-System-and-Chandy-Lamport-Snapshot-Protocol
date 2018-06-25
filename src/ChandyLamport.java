@@ -148,18 +148,18 @@ public class ChandyLamport {
 
 	//When saveChannelMsg is enabled save all the application messages sent on each channel
 	//Array list holds the application messages received on each channel
-	public static void saveChannelMessages(int channelNo,AppMessage m, MapProtocol mapObject) {
+	public static void saveChannelMessages(int channelNo,AppMessage appmsg, MapProtocol mapObject) {
 		synchronized(mapObject){ 
 			if(mapObject.RxdMarker.get(channelNo) == false) {
 				// or create a list and add the message into it
 				if((mapObject.channelStates.get(channelNo).isEmpty())){
-					ArrayList<AppMessage> msgs = mapObject.channelStates.get(channelNo);
-					msgs.add(m);
-					mapObject.channelStates.put(channelNo, msgs);
+					ArrayList<AppMessage> msgList = mapObject.channelStates.get(channelNo);
+					msgList.add(appmsg);
+					mapObject.channelStates.put(channelNo, msgList); // add to Hash map
 				}
 				// if the ArrayList is already there just add this message to it
 				else if(!(mapObject.channelStates.get(channelNo).isEmpty())){
-					mapObject.channelStates.get(channelNo).add(m);
+					mapObject.channelStates.get(channelNo).add(appmsg);
 				}
 			}
 		}
