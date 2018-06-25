@@ -5,18 +5,18 @@ import java.net.Socket;
 
 //Read object data sent by neighboring clients
 public class ReceiveThread extends Thread {
-	Socket cSocket;
+	Socket socket;
 	MapProtocol mapObject;
 
 	public ReceiveThread(Socket csocket,MapProtocol mapObject) {
-		this.cSocket = csocket;
+		this.socket = csocket;
 		this.mapObject = mapObject;
 	}
 
 	public void run() {
 		ObjectInputStream ois = null;
 		try {
-			ois = new ObjectInputStream(cSocket.getInputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
