@@ -35,5 +35,5 @@ class StateMessage extends Message implements Serializable{
 // Send Finish messages to all nodes to when termination is detected
 @SuppressWarnings("serial")
 class FinishMessage extends Message implements Serializable{
-	String msg = "halt";
+	String msg = "finish";
 }
