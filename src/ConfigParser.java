@@ -45,7 +45,7 @@ public class ConfigParser {
 						}
 					}
 					else if(flag == 2){
-						insertIntoMatrix(input1,mapFile, curNode);
+						populateMatrix(input1,mapFile, curNode);
 						curNode++;
 					}
 				}
@@ -70,7 +70,7 @@ public class ConfigParser {
 						}
 					}
 					else if(flag == 2){
-						insertIntoMatrix(input,mapFile,curNode);
+						populateMatrix(input,mapFile,curNode);
 						curNode++;
 					}
 				}
@@ -78,7 +78,7 @@ public class ConfigParser {
 			br.close();  
 		}
 		catch(FileNotFoundException ex) {
-			System.out.println("Unable to open file '" +fileName + "'");                
+			System.out.println("Unable to open file '" + fileName + "'");                
 		}
 		catch(IOException ex) {
 			System.out.println("Error reading file '" + fileName + "'");                  
@@ -96,7 +96,7 @@ public class ConfigParser {
 		return mapFile;
 	}
 
-	static void insertIntoMatrix(String[] input, MapProtocol mapFile,int curNode) {
+	static void populateMatrix(String[] input, MapProtocol mapFile,int curNode) {
 		for(String i:input){
 			mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
 		}
