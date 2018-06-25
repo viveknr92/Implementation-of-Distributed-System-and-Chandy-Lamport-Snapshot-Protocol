@@ -23,21 +23,21 @@ public class MapProtocol implements Serializable  {
 	static String outFile;
 
 	//Mapping between process number as keys and <id,host,port> as value
-	HashMap<Integer,Node> nodeInfo = new HashMap<Integer,Node>();
+	HashMap<Integer,Node> nodeInfo;
 	
 	//ArrayList which holds the total processes(nodes) 
-	ArrayList<Node> nodes = new ArrayList<Node>();
+	ArrayList<Node> nodes;
 	
 	// Create all the channels in the beginning and keep it open till the end
 	// Mapping between each process as a server and its client connections
-	HashMap<Integer,Socket> channels = new HashMap<Integer,Socket>();
+	HashMap<Integer,Socket> channels;
 	
 	// Mapping between ArrayList of messages for each process receiving incoming messages
 	HashMap<Integer,ArrayList<AppMessage>> channelStates;
 	
 	// Create all the output streams associated with each socket 
 	//Mapping between each sent message with object output stream
-	HashMap<Integer,ObjectOutputStream> oStream = new HashMap<Integer,ObjectOutputStream>();
+	HashMap<Integer,ObjectOutputStream> oStream;
 
 	// Mapping between processes and StMsg which stores all state messages
 	HashMap<Integer,StateMessage> stateMsg;	
@@ -52,7 +52,7 @@ public class MapProtocol implements Serializable  {
 	boolean[] isRxdStateMsg;
 	
 	//Final output vector snapshots
-	ArrayList<int[]> globalSnapshots = new ArrayList<int[]>();
+	ArrayList<int[]> globalSnapshots;
 	
 	//Constructor to initialize all variables
 	public MapProtocol() {
