@@ -18,7 +18,6 @@ do
 	node=$( echo $line | awk '{ print $1 }' )
 	hostname=$( echo $line | awk '{ print $2 }' )
 	port=$( echo $line | awk '{ print $3 }' )
-	echo $hostname
 	if [[ $hostname == dc* ]]		
 	then
 		n=$(( n + 1 ))

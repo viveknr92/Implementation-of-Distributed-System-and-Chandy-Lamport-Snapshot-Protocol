@@ -14,7 +14,7 @@
 #
 # Your main project class
 #
-PROG=ProjectMain
+PROG=Main
 NETID=$2
 PROGRAM_PATH=$(pwd)
 
@@ -35,11 +35,8 @@ cat $1 | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 	#echo $line
 	nodeId=$( echo $line | awk '{ print $1 }' )
        	host=$( echo $line | awk '{ print $2 }' )
-	echo $nodeId
-	echo $host
-	echo $NETID
-	echo $PROGRAM_PATH
 	ssh -o StrictHostKeyChecking=no -l "$NETID" "$host" "cd $PROGRAM_PATH;java $PROG $nodeId $1" &
+	echo Started : $nodeId - $host
 	
     done
    
