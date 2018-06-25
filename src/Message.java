@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class Message implements Serializable {
-	MapProtocol m = new MapProtocol();
-	int n = m.numOfNodes;
+	//MapProtocol m = new MapProtocol();
+	//int n = m.numOfNodes;
 }
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
