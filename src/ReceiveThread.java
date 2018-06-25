@@ -79,7 +79,9 @@ public class ReceiveThread extends Thread {
 					
 					//If finishMsg send to all neighbors
 					else if(msg instanceof FinishMessage){	
-						ChandyLamport.sendFinishMsg(mapObject);
+						new OutputWriter(mapObject).storeSnapshotsToFile();
+						System.out.println("Node : " + mapObject.id + " - Successfully written to output file");
+						System.exit(0);
 					}
 
 					if(msg instanceof AppMessage){
