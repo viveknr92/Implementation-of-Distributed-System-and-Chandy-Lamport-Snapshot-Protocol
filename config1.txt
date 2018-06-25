@@ -1,0 +1,24 @@
+# nodes minPerActive maxPerActive minSendDelay snapshotDelay(ms) maxNumber
+10 6 10 100 500 50
+
+0 dc01.utdallas.edu 20028 # nodeID hostName listen Port
+1 dc02.utdallas.edu 30025
+2 dc03.utdallas.edu 30026
+3 dc04.utdallas.edu 30027
+4 dc05.utdallas.edu 20028 # nodeID hostName listen Port
+5 dc06.utdallas.edu 30025
+6 dc07.utdallas.edu 30026
+7 dc08.utdallas.edu 30027
+8 dc09.utdallas.edu 20028 # nodeID hostName listen Port
+9 dc10.utdallas.edu 30025
+
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9
