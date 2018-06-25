@@ -191,7 +191,7 @@ public class ChandyLamport {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(mapObject.id + " - Write to file done");
+			System.out.println("Node : " + mapObject.id + " - Successfully written to output file");
 			System.exit(0);
 		}
 	}

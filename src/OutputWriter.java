@@ -13,7 +13,7 @@ public class OutputWriter {
 
 
 	public void storeSnapshotsToFile() {
-		String fileName = MapProtocol.outFile+"-"+mapObject.id+".out";
+		String fileName = MapProtocol.outFile + "-" + mapObject.id + ".out";
 		synchronized(mapObject.globalSnapshots){
 			try {
 				File file = new File(fileName);
@@ -30,7 +30,7 @@ public class OutputWriter {
    
 				for(int i=0;i<mapObject.globalSnapshots.size();i++){
 					for(int j:mapObject.globalSnapshots.get(i)){
-						bW.write(j+" ");
+						bW.write(j + " ");
 						
 					}
 					if(i<(mapObject.globalSnapshots.size()-1)){
