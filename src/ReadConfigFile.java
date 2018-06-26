@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class ConfigParser {
+public class ReadConfigFile {
 
 	public static MapProtocol readConfigFile(String name) throws IOException{
 		MapProtocol mapFile = new MapProtocol();
@@ -24,53 +24,53 @@ public class ConfigParser {
 					continue;
 				// Ignore comments and consider only those lines which are not comments
 				if(line.contains("#")){
-					String[] input = line.split("#.*$"); //Ignore text after # symbol
-					String[] input1 = input[0].split("\\s+");
-					if(flag == 0 && input1.length == 6){
-						mapFile.numOfNodes = Integer.parseInt(input1[0]);
-						mapFile.minPerActive = Integer.parseInt(input1[1]);
-						mapFile.maxPerActive = Integer.parseInt(input1[2]);
-						mapFile.minSendDelay = Integer.parseInt(input1[3]);
-						mapFile.snapshotDelay = Integer.parseInt(input1[4]);
-						mapFile.maxNumber = Integer.parseInt(input1[5]);
+					String[] config_input_comment = line.split("#.*$"); //Ignore text after # symbol
+					String[] config_input = config_input_comment[0].split("\\s+");
+					if(flag == 0 && config_input.length == 6){
+						mapFile.numOfNodes = Integer.parseInt(config_input[0]);
+						mapFile.minPerActive = Integer.parseInt(config_input[1]);
+						mapFile.maxPerActive = Integer.parseInt(config_input[2]);
+						mapFile.minSendDelay = Integer.parseInt(config_input[3]);
+						mapFile.snapshotDelay = Integer.parseInt(config_input[4]);
+						mapFile.maxNumber = Integer.parseInt(config_input[5]);
 						mapFile.adjMtx = new int[mapFile.numOfNodes][mapFile.numOfNodes];
 						flag++;
 					}
 					else if(flag == 1 && count < mapFile.numOfNodes)
 					{							
-						mapFile.nodes.add(new Node(Integer.parseInt(input1[0]),input1[1],Integer.parseInt(input1[2])));
+						mapFile.nodes.add(new Node(Integer.parseInt(config_input[0]),config_input[1],Integer.parseInt(config_input[2])));
 						count++;
 						if(count == mapFile.numOfNodes){
 							flag = 2;
 						}
 					}
 					else if(flag == 2){
-						populateMatrix(input1,mapFile, curNode);
+						AddToAdjMatrix(config_input, mapFile, curNode);
 						curNode++;
 					}
 				}
 				else {
-					String[] input = line.split("\\s+");
-					if(flag == 0 && input.length == 6){
-						mapFile.numOfNodes = Integer.parseInt(input[0]);
-						mapFile.minPerActive = Integer.parseInt(input[1]);
-						mapFile.maxPerActive = Integer.parseInt(input[2]);
-						mapFile.minSendDelay = Integer.parseInt(input[3]);
-						mapFile.snapshotDelay = Integer.parseInt(input[4]);
-						mapFile.maxNumber = Integer.parseInt(input[5]);
+					String[] config_input = line.split("\\s+");
+					if(flag == 0 && config_input.length == 6){
+						mapFile.numOfNodes = Integer.parseInt(config_input[0]);
+						mapFile.minPerActive = Integer.parseInt(config_input[1]);
+						mapFile.maxPerActive = Integer.parseInt(config_input[2]);
+						mapFile.minSendDelay = Integer.parseInt(config_input[3]);
+						mapFile.snapshotDelay = Integer.parseInt(config_input[4]);
+						mapFile.maxNumber = Integer.parseInt(config_input[5]);
 						flag++;
 						mapFile.adjMtx = new int[mapFile.numOfNodes][mapFile.numOfNodes];
 					}
 					else if(flag == 1 && count < mapFile.numOfNodes)
 					{
-						mapFile.nodes.add(new Node(Integer.parseInt(input[0]),input[1],Integer.parseInt(input[2])));
+						mapFile.nodes.add(new Node(Integer.parseInt(config_input[0]),config_input[1],Integer.parseInt(config_input[2])));
 						count++;
 						if(count == mapFile.numOfNodes){
 							flag = 2;
 						}
 					}
 					else if(flag == 2){
-						populateMatrix(input,mapFile,curNode);
+						AddToAdjMatrix(config_input,mapFile,curNode);
 						curNode++;
 					}
 				}
@@ -96,7 +96,7 @@ public class ConfigParser {
 		return mapFile;
 	}
 
-	static void populateMatrix(String[] input, MapProtocol mapFile,int curNode) {
+	static void AddToAdjMatrix(String[] input, MapProtocol mapFile,int curNode) {
 		for(String i:input){
 			mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
 		}
