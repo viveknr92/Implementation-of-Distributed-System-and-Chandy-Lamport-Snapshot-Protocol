@@ -183,7 +183,7 @@ public class CL_Protocol {
 	//Method to send finish message to all the neighbors of the current Node
 	public static void sendFinishMsg(MapProtocol mapObject) {
 		synchronized(mapObject){
-			new OutputWriter(mapObject).storeSnapshotsToFile();
+			new Output(mapObject).storeSnapshotsToFile();
 			for(int s : mapObject.neighbors){
 				FinishMessage m = new FinishMessage();
 				ObjectOutputStream oos = mapObject.oStream.get(s);

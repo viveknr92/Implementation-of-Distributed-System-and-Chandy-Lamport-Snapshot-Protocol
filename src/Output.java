@@ -4,10 +4,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 //Print the globalSnapshots to the output File
-public class OutputWriter {
+public class Output {
 	MapProtocol mapObject;
 
-	public OutputWriter(MapProtocol mapObject) {
+	public Output(MapProtocol mapObject) {
 		this.mapObject = mapObject;
 	}
 
