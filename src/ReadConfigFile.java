@@ -48,9 +48,12 @@ public class ReadConfigFile {
 						next = 2;
 					}
 				}
-				else if(next == 2){
+				else if(next == 2) {
 					for(String i : config_input){
-						mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
+						if(curNode != Integer.parseInt(i)) {
+							mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
+							mapFile.adjMtx[Integer.parseInt(i)][curNode] = 1;
+						}
 					}
 					curNode++;
 				}
@@ -62,16 +65,6 @@ public class ReadConfigFile {
 		}
 		catch(IOException ex) {
 			System.out.println("Error reading file '" + fileName + "'");                  
-		}
-		for(int i = 0 ; i < mapFile.numOfNodes ; i++){
-			for(int j = 0 ; j < mapFile.numOfNodes ; j++){
-				if(mapFile.adjMtx[i][j] == 1){
-					mapFile.adjMtx[j][i] = 1;
-				}
-				if(mapFile.adjMtx[i][i] == 1){
-					mapFile.adjMtx[i][i] = 0;
-				}
-			}
 		}
 		return mapFile;
 	}
