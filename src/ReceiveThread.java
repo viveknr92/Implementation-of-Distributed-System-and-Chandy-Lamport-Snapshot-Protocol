@@ -30,7 +30,7 @@ public class ReceiveThread extends Thread {
 					//If MarkerMessage send marker messages to all neighboring nodes
 					if(msg instanceof MarkerMessage){
 						int channelNo = ((MarkerMessage) msg).nodeId;
-						ChandyLamport.sendMarkerMessage(mapObject,channelNo);
+						CL_Protocol.sendMarkerMessage(mapObject,channelNo);
 					}	
 
 					//If AppMsg and node is passive becomes active only if
@@ -52,7 +52,7 @@ public class ReceiveThread extends Thread {
 						//Save the channel No from where AppMsg was sent
 						int channelNo = ((AppMessage) msg).nodeId;
 						//Log the application message since saveChannelMsg is enabled
-						ChandyLamport.saveChannelMessages(channelNo,((AppMessage) msg) ,mapObject);
+						CL_Protocol.saveChannelMessages(channelNo,((AppMessage) msg) ,mapObject);
 					}
 					
 					//If StateMessage then and nodeId is 0 check for termination
@@ -64,7 +64,7 @@ public class ReceiveThread extends Thread {
 							mapObject.isRxdStateMsg[((StateMessage) msg).nodeId] = true;
 							if(mapObject.stateMsg.size() == mapObject.numOfNodes){
 								//Check for termination or take next snapshot
-								isNotTerminated = ChandyLamport.detectTermination(mapObject,((StateMessage)msg));
+								isNotTerminated = CL_Protocol.detectTermination(mapObject,((StateMessage)msg));
 								if(isNotTerminated){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
@@ -73,13 +73,13 @@ public class ReceiveThread extends Thread {
 							}
 						}
 						else{
-							ChandyLamport.sendToParent(mapObject,((StateMessage)msg));
+							CL_Protocol.sendToParent(mapObject,((StateMessage)msg));
 						}
 					}
 					
 					//If finishMsg send to all neighbors
 					else if(msg instanceof FinishMessage){	
-						ChandyLamport.sendFinishMsg(mapObject);
+						CL_Protocol.sendFinishMsg(mapObject);
 					}
 
 					if(msg instanceof AppMessage){

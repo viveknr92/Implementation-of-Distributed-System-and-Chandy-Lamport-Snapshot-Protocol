@@ -17,6 +17,6 @@ public class ChandyLamportThread extends Thread{
 				e.printStackTrace();
 			}
 		}
-		ChandyLamport.beginCLProtocol(mapObject);
+		CL_Protocol.beginCLProtocol(mapObject);
 	}
 }

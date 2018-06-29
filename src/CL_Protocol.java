@@ -3,7 +3,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
-public class ChandyLamport { 
+public class CL_Protocol { 
   
 	public static void beginCLProtocol(MapProtocol mapObject) {
 		synchronized(mapObject){
