@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class ReadConfigFile {
 
@@ -23,56 +25,38 @@ public class ReadConfigFile {
 				if(line.length() == 0 || line.startsWith("#"))
 					continue;
 				// Ignore comments and consider only those lines which are not comments
+				String[] config_input;
 				if(line.contains("#")){
 					String[] config_input_comment = line.split("#.*$"); //Ignore text after # symbol
-					String[] config_input = config_input_comment[0].split("\\s+");
-					if(flag == 0 && config_input.length == 6){
-						mapFile.numOfNodes = Integer.parseInt(config_input[0]);
-						mapFile.minPerActive = Integer.parseInt(config_input[1]);
-						mapFile.maxPerActive = Integer.parseInt(config_input[2]);
-						mapFile.minSendDelay = Integer.parseInt(config_input[3]);
-						mapFile.snapshotDelay = Integer.parseInt(config_input[4]);
-						mapFile.maxNumber = Integer.parseInt(config_input[5]);
-						mapFile.adjMtx = new int[mapFile.numOfNodes][mapFile.numOfNodes];
-						flag++;
-					}
-					else if(flag == 1 && count < mapFile.numOfNodes)
-					{							
-						mapFile.nodes.add(new Node(Integer.parseInt(config_input[0]),config_input[1],Integer.parseInt(config_input[2])));
-						count++;
-						if(count == mapFile.numOfNodes){
-							flag = 2;
-						}
-					}
-					else if(flag == 2){
-						AddToAdjMatrix(config_input, mapFile, curNode);
-						curNode++;
-					}
+					config_input = config_input_comment[0].split("\\s+");
 				}
 				else {
-					String[] config_input = line.split("\\s+");
-					if(flag == 0 && config_input.length == 6){
-						mapFile.numOfNodes = Integer.parseInt(config_input[0]);
-						mapFile.minPerActive = Integer.parseInt(config_input[1]);
-						mapFile.maxPerActive = Integer.parseInt(config_input[2]);
-						mapFile.minSendDelay = Integer.parseInt(config_input[3]);
-						mapFile.snapshotDelay = Integer.parseInt(config_input[4]);
-						mapFile.maxNumber = Integer.parseInt(config_input[5]);
-						flag++;
-						mapFile.adjMtx = new int[mapFile.numOfNodes][mapFile.numOfNodes];
+					config_input = line.split("\\s+");
+				}
+
+				if(flag == 0 && config_input.length == 6){
+					mapFile.numOfNodes = Integer.parseInt(config_input[0]);
+					mapFile.minPerActive = Integer.parseInt(config_input[1]);
+					mapFile.maxPerActive = Integer.parseInt(config_input[2]);
+					mapFile.minSendDelay = Integer.parseInt(config_input[3]);
+					mapFile.snapshotDelay = Integer.parseInt(config_input[4]);
+					mapFile.maxNumber = Integer.parseInt(config_input[5]);
+					mapFile.adjMtx = new int[mapFile.numOfNodes][mapFile.numOfNodes];
+					flag++;
+				}
+				else if(flag == 1 && count < mapFile.numOfNodes)
+				{							
+					mapFile.nodes.add(new Node(Integer.parseInt(config_input[0]),config_input[1],Integer.parseInt(config_input[2])));
+					count++;
+					if(count == mapFile.numOfNodes){
+						flag = 2;
 					}
-					else if(flag == 1 && count < mapFile.numOfNodes)
-					{
-						mapFile.nodes.add(new Node(Integer.parseInt(config_input[0]),config_input[1],Integer.parseInt(config_input[2])));
-						count++;
-						if(count == mapFile.numOfNodes){
-							flag = 2;
-						}
+				}
+				else if(flag == 2){
+					for(String i : config_input){
+						mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
 					}
-					else if(flag == 2){
-						AddToAdjMatrix(config_input,mapFile,curNode);
-						curNode++;
-					}
+					curNode++;
 				}
 			}
 			br.close();  
@@ -96,14 +80,19 @@ public class ReadConfigFile {
 		return mapFile;
 	}
 
-	static void AddToAdjMatrix(String[] input, MapProtocol mapFile,int curNode) {
-		for(String i:input){
-			mapFile.adjMtx[curNode][Integer.parseInt(i)] = 1;
-		}
-	}
-
-//	public static void main(String[] args) throws IOException{
-//		ProjectMain m = ConfigParser.readConfigFile("config.txt");
+//	public static void main(String[] args) throws IOException {
+//		MapProtocol m = ReadConfigFile.readConfigFile("config.txt");
+//		
+//		for(Node n : m.nodes) {
+//			System.out.println(n.host + " " + n.nodeId + " " + n.port);
+//		}
+//		System.out.println(m.numOfNodes);
+//		System.out.println(m.minPerActive);
+//		System.out.println(m.maxPerActive);
+//		System.out.println(m.minSendDelay);
+//		System.out.println(m.snapshotDelay);
+//		System.out.println(m.maxNumber);
+//		
 //		for(int i=0;i<m.numOfNodes;i++){
 //			for(int j=0;j<m.numOfNodes;j++){
 //				System.out.print(m.adjMtx[i][j]+"  ");
