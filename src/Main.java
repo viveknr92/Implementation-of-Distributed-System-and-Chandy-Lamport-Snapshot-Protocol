@@ -5,7 +5,7 @@ public class Main {
 		
 		final int NODE_ZERO = 0;
 		//Parse through config.txt file
-		MapProtocol mapObject = ConfigParser.readConfigFile(args[1]);
+		MapProtocol mapObject = ReadConfigFile.readConfigFile(args[1]);
 		// Get the node number of the current Node
 		mapObject.id = Integer.parseInt(args[0]);
 		int curNode = mapObject.id;
@@ -19,7 +19,7 @@ public class Main {
 			mapObject.nodeInfo.put(mapObject.nodes.get(i).nodeId, mapObject.nodes.get(i));
 		}
 	
-		//Create a server socket and listen for clients
+		//Create a server socket 
 		TCPServer server = new TCPServer(mapObject);
 		
 		//Create channels and keep it till the end
