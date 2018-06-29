@@ -1,9 +1,9 @@
 
 //Thread to start chandy lamport protocol
-public class ChandyLamportThread extends Thread{
+public class CL_Protocol_Thread extends Thread{
 
 	MapProtocol mapObject;
-	public ChandyLamportThread(MapProtocol mapObject){
+	public CL_Protocol_Thread(MapProtocol mapObject){
 		this.mapObject = mapObject;
 	}
 	public void run(){

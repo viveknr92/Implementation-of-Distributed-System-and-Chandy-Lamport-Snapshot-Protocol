@@ -34,7 +34,7 @@ public class Main {
 		if(curNode == NODE_ZERO){
 			mapObject.active = true;		
 			//Call Chandy Lamport protocol if it is node 0
-			new ChandyLamportThread(mapObject).start();		
+			new CL_Protocol_Thread(mapObject).start();		
 			new SendMessageThread(mapObject).start();
 		}
 		

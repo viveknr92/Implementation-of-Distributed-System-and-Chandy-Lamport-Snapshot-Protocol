@@ -68,7 +68,7 @@ public class ReceiveThread extends Thread {
 								if(isNotTerminated){
 									mapObject.initialize(mapObject);
 									//Call thread again to take new snapshot
-									new ChandyLamportThread(mapObject).start();	
+									new CL_Protocol_Thread(mapObject).start();	
 								}								
 							}
 						}
