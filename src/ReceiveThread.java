@@ -22,8 +22,8 @@ public class ReceiveThread extends Thread {
 		}
 		while(true){
 			try {
-				Message msg;
-				msg = (Message) ois.readObject();
+				StreamMessage msg;
+				msg = (StreamMessage) ois.readObject();
 				// Synchronizing mapObject so that multiple threads access mapObject in a synchronized way
 				synchronized(mapObject){
 					boolean isNotTerminated = true;

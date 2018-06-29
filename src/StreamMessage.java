@@ -4,21 +4,21 @@ import java.util.HashMap;
 
 
 @SuppressWarnings("serial")
-public class Message implements Serializable {
+public class StreamMessage implements Serializable {
 	MapProtocol m = new MapProtocol();
 	int n = m.numOfNodes;
 }
 
 @SuppressWarnings("serial")
 // Sends string message and vector timestamp
-class AppMessage extends Message implements Serializable{
+class AppMessage extends StreamMessage implements Serializable{
 	String msg = "Test";
 	int nodeId;
 	int[] vector;
 }
 // Sends marker string and nodeId
 @SuppressWarnings("serial")
-class MarkerMessage extends Message implements Serializable{
+class MarkerMessage extends StreamMessage implements Serializable{
 	String msg = "marker";
 	int nodeId;
 }
@@ -26,7 +26,7 @@ class MarkerMessage extends Message implements Serializable{
 // State message is sent to converge cast tree,
 // It should have the process state and all its incoming channel states 
 @SuppressWarnings("serial")
-class StateMessage extends Message implements Serializable{
+class StateMessage extends StreamMessage implements Serializable{
 	boolean active;
 	int nodeId;
 	HashMap<Integer,ArrayList<AppMessage>> channelStates;
@@ -35,6 +35,6 @@ class StateMessage extends Message implements Serializable{
 
 // Send Finish messages to all nodes to when termination is detected
 @SuppressWarnings("serial")
-class FinishMessage extends Message implements Serializable{
+class FinishMessage extends StreamMessage implements Serializable{
 	String msg = "finish";
 }
