@@ -23,7 +23,7 @@ public class SendMessageThread extends Thread{
 
 		//Send the messages to random neighbors each time and add minSendDelay between each send
 		for(int i=0;i<randMessages;i++){
-			synchronized(this){
+			synchronized(mapObject){
 				//get a random neigbour
 				int randNeighborNode = this.getRandomNumber(0,mapObject.neighbors.size()-1);
 				int curNeighbor = mapObject.neighbors.get(randNeighborNode);
@@ -50,9 +50,15 @@ public class SendMessageThread extends Thread{
 				}
 			}
 			// Wait for minimum sending delay before sending another message
-			Thread.sleep(minSendDelay);
+			try{
+				Thread.sleep(minSendDelay);
+			}
+			catch (InterruptedException e) {
+				System.out.println("Error in SendMessages");
+				e.printStackTrace();
+			}
 		}
-		synchronized(this){
+		synchronized(mapObject){
 			// After sending minPerActive to maxPerActive number of messages node should be passive
 			mapObject.active = false;
 		}
@@ -63,7 +69,7 @@ public class SendMessageThread extends Thread{
 		try {
 			this.sendMessages();
 		} catch (InterruptedException e) {
-			System.out.println("Error in EmitMessages");
+			System.out.println("Error in SendMessages");
 			e.printStackTrace();
 		}
 	}
