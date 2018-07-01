@@ -41,6 +41,7 @@ public class CL_Protocol {
 					ObjectOutputStream oos = mapObject.oStream.get(i);
 					try {
 						oos.writeObject(m);
+						oos.flush();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -57,6 +58,7 @@ public class CL_Protocol {
 					ObjectOutputStream oos = mapObject.oStream.get(parent);
 					try {
 						oos.writeObject(mapObject.curState);
+						oos.flush();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -86,6 +88,7 @@ public class CL_Protocol {
 					ObjectOutputStream oos = mapObject.oStream.get(parent);
 					try {
 						oos.writeObject(mapObject.curState);
+						oos.flush();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -174,6 +177,7 @@ public class CL_Protocol {
 			ObjectOutputStream oos = mapObject.oStream.get(parent);
 			try {
 				oos.writeObject(stateMsg);
+				oos.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -189,6 +193,7 @@ public class CL_Protocol {
 				ObjectOutputStream oos = mapObject.oStream.get(s);
 				try {
 					oos.writeObject(m);
+					oos.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
