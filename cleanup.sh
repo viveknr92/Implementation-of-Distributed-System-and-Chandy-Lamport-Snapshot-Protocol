@@ -1,16 +1,12 @@
 
 CONFIG=$PWD/$1
 NETID=$2
-
-
-
 n=1
 
 cat $CONFIG | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 (
 read line 
 numhosts=$( echo $line | awk '{ print $1 }' ) 
-#netid=$( echo $line | awk '{ print $2 }' )
 
 while [[ $n -le numhosts ]] 
 do
