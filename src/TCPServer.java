@@ -19,7 +19,7 @@ public class TCPServer{
 			listener = new ServerSocket(serverPort);
 		} 
 		catch(BindException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Node " + mapObject.id + " : " + e.getMessage() + ", Port : " + serverPort);
 			System.exit(1);
 		}
 		catch (IOException e) {
