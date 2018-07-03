@@ -1,5 +1,5 @@
 # nodes minPerActive maxPerActive minSendDelay snapshotDelay(ms) maxNumber
-20 6 10 20 500 1000
+20 6 10 20 500 500
 
 0 dc01.utdallas.edu 20028
 1 dc02.utdallas.edu 30025
